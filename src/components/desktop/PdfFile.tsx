@@ -6,16 +6,18 @@ import { siteData } from '../../data/site';
 interface Props {
   zIndex: number;
   onBringToFront: () => void;
-  url: string;
+  url?: string;
   constraintsRef?: React.RefObject<HTMLElement>;
 }
 
 export function PdfFile({ zIndex, onBringToFront, url, constraintsRef }: Props) {
+  const resumeUrl = url || siteData.customPdfBase64 || '/resume.pdf';
+
   const handleOpenPdf = () => {
-    const targetUrl = url || '/resume.pdf';
-    // Cross-browser reliable opening that avoids popup blockers
+    // Exact same file and download behavior as the 'Get CV' button
     const link = document.createElement('a');
-    link.href = targetUrl;
+    link.href = resumeUrl;
+    link.download = 'resume.pdf';
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
     document.body.appendChild(link);

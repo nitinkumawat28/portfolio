@@ -19,36 +19,8 @@ function App({ initialFolderId = null }: AppProps) {
   const [topZ, setTopZ] = useState(10);
   const constraintsRef = useRef<HTMLElement>(null);
 
-  const [pdfUrl] = useState<string>(() => {
-    const rawUrl = siteData.customPdfBase64;
-    if (rawUrl && typeof rawUrl === 'string' && rawUrl.startsWith('data:application/pdf')) {
-      try {
-        const arr = rawUrl.split(',');
-        const mimeMatch = arr[0].match(/:(.*?);/);
-        const mime = mimeMatch ? mimeMatch[1] : 'application/pdf';
-        const bstr = atob(arr[1]);
-        let n = bstr.length;
-        const u8arr = new Uint8Array(n);
-        while (n--) {
-          u8arr[n] = bstr.charCodeAt(n);
-        }
-        const blob = new Blob([u8arr], { type: mime });
-        return URL.createObjectURL(blob);
-      } catch (e) {
-        console.error('Failed to parse PDF data URI', e);
-        return '/resume.pdf';
-      }
-    }
-    return '/resume.pdf';
-  });
+  const pdfUrl = siteData.customPdfBase64 || '/resume.pdf';
 
-  useEffect(() => {
-    return () => {
-      if (pdfUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(pdfUrl);
-      }
-    };
-  }, [pdfUrl]);
 
   // Listen to browser popstate (back/forward)
   useEffect(() => {
