@@ -1,14 +1,16 @@
 import { FileText } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { DraggableObject } from './DraggableObject';
 import { siteData } from '../../data/site';
 
 interface Props {
   zIndex: number;
   onBringToFront: () => void;
-  onClick: () => void;
+  url: string;
+  constraintsRef?: React.RefObject<HTMLElement>;
 }
 
-export function PdfFile({ zIndex, onBringToFront, onClick }: Props) {
+export function PdfFile({ zIndex, onBringToFront, url, constraintsRef }: Props) {
   return (
     <DraggableObject
       id="pdfFile"
@@ -16,10 +18,11 @@ export function PdfFile({ zIndex, onBringToFront, onClick }: Props) {
       initialY={siteData.positions.pdf.y}
       zIndex={zIndex}
       onBringToFront={onBringToFront}
+      constraintsRef={constraintsRef}
     >
-      <div 
+      <motion.div 
         className="flex flex-col items-center group w-[100px] cursor-pointer outline-none"
-        onClick={onClick}
+        onClick={() => window.open(url, '_blank')}
         tabIndex={0}
       >
         <div className="w-[72px] h-[92px] bg-white rounded-lg shadow-md border border-gray-200 relative mb-2 flex flex-col p-2 group-hover:scale-105 group-hover:shadow-lg transition-all">
@@ -44,7 +47,7 @@ export function PdfFile({ zIndex, onBringToFront, onClick }: Props) {
         <span className="text-white text-[13px] font-medium drop-shadow-md group-focus:bg-blue-500/50 group-focus:rounded px-1">
           Resume.pdf
         </span>
-      </div>
+      </motion.div>
     </DraggableObject>
   );
 }

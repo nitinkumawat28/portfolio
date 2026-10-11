@@ -1,37 +1,68 @@
-export const siteData = {
-  name: "[YOUR NAME]",
-  role: "[ROLE]",
-  niche: "[NICHE]",
-  timezone: "[CITY/TZ]",
-  introParagraph: "My designs are used by hundreds of thousands of people and major brands, including **[BRAND 1]**, **[BRAND 2]**, and **[BRAND 3]**.",
+const defaultSiteData = {
+  name: "Nitin Kumawat",
+  shortName: "Nitin",
+  role: "AI & Full-Stack Developer",
+  tagline: "Student at SVNIT. I analyze product data and market research for startups.",
+  niche: "Product Data & AI SaaS",
+  timezoneLabel: "IST",
+  timezone: "Asia/Kolkata",
+  email: "nitinkumawat2807@gmail.com",
+  introParagraph: "Hi, I’m Nitin, Student at SVNIT. I analyze product data and market research for startups. I turn numbers and customer feedback into clear decisions. AI assisted Saas developer solving real world problem.",
   socialLinks: {
-    telegram: "#",
-    linkedin: "#",
-    email: "#",
-    github: "#"
+    email: "mailto:nitinkumawat2807@gmail.com",
+    linkedin: "https://www.linkedin.com/in/nitin-kumawat-25367a311/",
+    github: "https://github.com/nitinkumawat28",
+    whatsapp: "[OPTIONAL: https://wa.me/91XXXXXXXXXX]",
+    telegram: ""
   },
   postCard: {
-    channelName: "[Channel Name]",
-    avatar: "https://api.dicebear.com/7.x/notionists/svg?seed=avatar",
-    text: "One Take Studio \u0432 \u0430\u043f\u043f\u0441\u0442\u043e\u0440\nhttps://apps.apple.com/kz/app/one...",
-    views: "58",
-    timeAgo: "7d ago",
-    url: "#"
+    channelName: "https://healthsaral.in",
+    avatar: "/healthsaral-logo.png",
+    text: "AI-powered health report analyzer that turns complex medical reports into easy-to-understand language.",
+    views: "20 daily active users",
+    timeAgo: "2026",
+    url: "https://www.healthsaral.in"
   },
   folders: [
-    { id: "featured", title: "[Project 1 title]", isFeatured: true, color: "gray" },
-    { id: "project2", title: "[Project 2 title]", isFeatured: false, color: "gray" },
-    { id: "project3", title: "[Project 3 title]", isFeatured: false, color: "gray" },
-    { id: "gallery", title: "[Gallery folder name]", isFeatured: false, color: "pink" }
+    { id: "projects", title: "Projects", isFeatured: false, color: "pink" },
+    { id: "repositories", title: "Git Repositories", isFeatured: false, color: "emerald" },
+    { id: "skills", title: "Skills", isFeatured: false, color: "cyan" },
+    { id: "achievements", title: "Achievements & Certificates", isFeatured: false, color: "amber" }
   ],
   positions: {
-    stickyNote: { x: "4%", y: "15%" },
-    postCard: { x: "40%", y: "5%" },
-    clock: { x: "85%", y: "14%" },
-    folder1: { x: "65%", y: "25%" }, // Dispatcher Workspace
-    folder2: { x: "75%", y: "55%" }, // Driver App
-    folder3: { x: "40%", y: "60%" }, // Mobile Website
-    folderGallery: { x: "48%", y: "35%" }, // Fun
-    pdf: { x: "15%", y: "65%" }
-  }
+    stickyNote: { x: "5%", y: "14%" },
+    postCard: { x: "36%", y: "14%" },
+    clock: { x: "84%", y: "14%" },
+    folder1: { x: "22%", y: "48%" },
+    folder2: { x: "40%", y: "50%" },
+    folder3: { x: "58%", y: "48%" },
+    folder4: { x: "76%", y: "50%" },
+    pdf: { x: "8%", y: "58%" }
+  },
+  customPdfBase64: null as string | null
 };
+
+// Merge with localStorage
+let mergedData = defaultSiteData;
+try {
+  if (typeof window !== 'undefined') {
+    const saved = localStorage.getItem('customSiteData');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // Only merge specific fields to avoid overwriting folders/positions if they update in code
+      mergedData = { 
+        ...defaultSiteData, 
+        name: parsed.name ?? defaultSiteData.name,
+        role: parsed.role ?? defaultSiteData.role,
+        niche: parsed.niche ?? defaultSiteData.niche,
+        socialLinks: parsed.socialLinks ?? defaultSiteData.socialLinks,
+        customPdfBase64: parsed.customPdfBase64 ?? defaultSiteData.customPdfBase64,
+        // specifically omit folders and positions so code changes apply
+      };
+    }
+  }
+} catch (e) {
+  console.error("Failed to load site data", e);
+}
+
+export const siteData = mergedData;
