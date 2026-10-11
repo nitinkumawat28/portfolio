@@ -24,13 +24,13 @@ export function TopBar() {
   const pillClass = "h-9 px-4 flex items-center gap-2 rounded-full bg-white/5 backdrop-blur border border-white/10 hover:bg-white/10 hover:-translate-y-[2px] transition-all cursor-pointer text-sm font-medium text-white";
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-20 flex items-center justify-between px-6 z-50">
-      <div className="flex items-center gap-3">
+    <header className="fixed top-0 left-0 right-0 h-20 flex items-center justify-between px-6 z-50 pointer-events-none">
+      <div className="flex items-center gap-3 pointer-events-auto">
         <Eyes />
         <span className="text-white font-semibold text-sm">Nitin Kumawat</span>
       </div>
       
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 pointer-events-auto">
         <div className="hidden md:flex items-center gap-2">
           <a href={siteData.socialLinks.linkedin} className={socialIconClass} aria-label="LinkedIn" target="_blank" rel="noreferrer"><LinkedinIcon /></a>
           <a href={siteData.socialLinks.email} className={socialIconClass} aria-label="Email"><Mail size={16} /></a>
