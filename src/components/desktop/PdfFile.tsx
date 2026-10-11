@@ -11,6 +11,18 @@ interface Props {
 }
 
 export function PdfFile({ zIndex, onBringToFront, url, constraintsRef }: Props) {
+  const handleOpenPdf = () => {
+    const targetUrl = url || '/resume.pdf';
+    // Cross-browser reliable opening that avoids popup blockers
+    const link = document.createElement('a');
+    link.href = targetUrl;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <DraggableObject
       id="pdfFile"
@@ -19,10 +31,12 @@ export function PdfFile({ zIndex, onBringToFront, url, constraintsRef }: Props) 
       zIndex={zIndex}
       onBringToFront={onBringToFront}
       constraintsRef={constraintsRef}
+      onClick={handleOpenPdf}
     >
       <motion.div 
-        className="flex flex-col items-center group w-[100px] cursor-pointer outline-none"
-        onClick={() => window.open(url, '_blank')}
+        className="flex flex-col items-center group w-[100px] cursor-pointer outline-none select-none"
+        onClick={handleOpenPdf}
+        onDoubleClick={handleOpenPdf}
         tabIndex={0}
       >
         <div className="w-[72px] h-[92px] bg-white rounded-lg shadow-md border border-gray-200 relative mb-2 flex flex-col p-2 group-hover:scale-105 group-hover:shadow-lg transition-all">

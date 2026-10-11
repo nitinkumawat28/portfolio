@@ -20,8 +20,8 @@ function App({ initialFolderId = null }: AppProps) {
   const constraintsRef = useRef<HTMLElement>(null);
 
   const [pdfUrl] = useState<string>(() => {
-    const rawUrl = siteData.customPdfBase64 || '/resume.pdf';
-    if (rawUrl.startsWith('data:')) {
+    const rawUrl = siteData.customPdfBase64;
+    if (rawUrl && typeof rawUrl === 'string' && rawUrl.startsWith('data:application/pdf')) {
       try {
         const arr = rawUrl.split(',');
         const mimeMatch = arr[0].match(/:(.*?);/);
@@ -36,9 +36,10 @@ function App({ initialFolderId = null }: AppProps) {
         return URL.createObjectURL(blob);
       } catch (e) {
         console.error('Failed to parse PDF data URI', e);
+        return '/resume.pdf';
       }
     }
-    return rawUrl;
+    return '/resume.pdf';
   });
 
   useEffect(() => {
