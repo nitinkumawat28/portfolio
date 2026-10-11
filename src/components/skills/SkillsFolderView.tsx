@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { SkillIcon } from "./SkillIcon";
+import { FloatingLogos } from "./FloatingLogos";
 
 
 type SkillItem = {
@@ -94,117 +95,136 @@ export function SkillsFolderView() {
   const activeAccent = currentProject && currentProject.id !== "all" ? currentProject.accent : null;
 
   return (
-    <div className="mx-auto max-w-4xl py-6 text-white">
-      {/* Project Filter Bar */}
-      <div className="mb-10 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight text-white md:text-3xl">Technical Skills</h2>
-          <p className="mt-1 text-sm text-white/60">
-            Real tools, frameworks, and APIs I work with daily — tagged with production projects.
-          </p>
+    <div className="relative mx-auto max-w-4xl py-6 pb-36 text-white min-h-full">
+      {/* Background Floating Skill Logos Layer */}
+      <FloatingLogos activeProject={activeFilter} />
+
+      {/* Main Content Layer */}
+      <div className="relative z-10">
+        {/* Project Filter Bar */}
+        <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/10 pb-6">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="font-mono text-emerald-400 text-sm font-bold">&lt;</span>
+              <span className="font-mono text-emerald-400 text-xs font-bold tracking-wider uppercase">TECH_STACK</span>
+              <span className="font-mono text-emerald-400 text-sm font-bold">&gt;</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-black tracking-tight text-white font-sans leading-none">
+              Technical Skills
+            </h2>
+            <p className="mt-2 text-sm sm:text-base text-white/65 max-w-xl leading-relaxed">
+              Real tools, frameworks, and APIs I work with daily — tagged with production projects.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 rounded-xl border border-white/10 bg-white/5 p-1.5 self-start md:self-auto shrink-0">
+            {FILTER_PROJECTS.map((proj) => {
+              const isSelected = activeFilter === proj.id;
+              return (
+                <button
+                  key={proj.id}
+                  type="button"
+                  onClick={() => setActiveFilter(proj.id)}
+                  className={`rounded-lg px-3.5 py-2 text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                    isSelected
+                      ? "bg-white/20 text-white shadow-md"
+                      : "text-white/60 hover:bg-white/10 hover:text-white"
+                  }`}
+                  style={isSelected && proj.accent !== "#ffffff" ? { borderLeft: `3px solid ${proj.accent}` } : undefined}
+                >
+                  {proj.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 p-1">
-          {FILTER_PROJECTS.map((proj) => {
-            const isSelected = activeFilter === proj.id;
-            return (
-              <button
-                key={proj.id}
-                type="button"
-                onClick={() => setActiveFilter(proj.id)}
-                className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-all ${
-                  isSelected
-                    ? "bg-white/15 text-white shadow-sm"
-                    : "text-white/60 hover:bg-white/5 hover:text-white"
-                }`}
-                style={isSelected && proj.accent !== "#ffffff" ? { borderLeft: `3px solid ${proj.accent}` } : undefined}
-              >
-                {proj.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+        {/* 5 Skill Sections: Languages, Digital Marketing, Databases, Cloud & DevOps, Tools */}
+        <div className="space-y-10">
+          {SKILL_CATEGORIES.map((cat) => (
+            <section key={cat.title}>
+              <div className="mb-4 flex items-center gap-2.5">
+                <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)]" />
+                <h3 className="text-lg sm:text-xl font-bold tracking-tight text-white font-sans">
+                  {cat.title}
+                </h3>
+                <span className="text-xs font-mono text-white/40">
+                  // {cat.skills.length} skills
+                </span>
+              </div>
 
-      {/* 5 Skill Sections: Languages, Digital Marketing, Databases, Cloud & DevOps, Tools */}
-      <div className="space-y-10">
-        {SKILL_CATEGORIES.map((cat) => (
-          <section key={cat.title}>
-            <h3 className="mb-4 text-xs font-mono font-semibold uppercase tracking-wider text-white/50">
-              {cat.title}
-            </h3>
+              <div className="flex flex-wrap gap-3">
+                {cat.skills.map((skill) => {
+                  const isHighlighted =
+                    activeFilter === "all" || (skill.projects && skill.projects.includes(activeFilter));
+                  const isDimmed = activeFilter !== "all" && !isHighlighted;
 
-            <div className="flex flex-wrap gap-3">
-              {cat.skills.map((skill) => {
-                const isHighlighted =
-                  activeFilter === "all" || (skill.projects && skill.projects.includes(activeFilter));
-                const isDimmed = activeFilter !== "all" && !isHighlighted;
-
-                return (
-                  <div
-                    key={skill.name}
-                    tabIndex={0}
-                    className={`group relative flex min-h-[44px] items-center gap-[10px] rounded-xl border px-3 py-2 transition-[border-color,background-color,opacity] duration-150 outline-none focus-visible:ring-2 focus-visible:ring-white/50 select-none ${
-                      isDimmed
-                        ? "opacity-40 border-white/5 bg-[#121720]/60"
-                        : "opacity-100 border-white/10 bg-[#161c24] hover:border-white/25 hover:bg-[#1a222c]"
-                    }`}
-                    style={
-                      isHighlighted && activeAccent
-                        ? { borderColor: `color-mix(in srgb, ${activeAccent} 40%, transparent)` }
-                        : undefined
-                    }
-                  >
-                    {/* Badge: 28x28px, border-radius 8px, background #1d2733, centered 18px icon */}
+                  return (
                     <div
-                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] bg-[#1d2733] transition-colors duration-150 group-hover:bg-[#253242]"
+                      key={skill.name}
+                      tabIndex={0}
+                      className={`group relative flex min-h-[50px] items-center gap-3 rounded-xl border px-4 py-2.5 transition-all duration-150 outline-none focus-visible:ring-2 focus-visible:ring-white/50 select-none ${
+                        isDimmed
+                          ? "opacity-35 border-white/5 bg-[#121720]/50"
+                          : "opacity-100 border-white/10 bg-[#161c24] hover:border-white/25 hover:bg-[#1c2430] hover:scale-[1.02]"
+                      }`}
                       style={
                         isHighlighted && activeAccent
-                          ? { borderColor: activeAccent, borderWidth: 1 }
+                          ? { borderColor: `color-mix(in srgb, ${activeAccent} 45%, transparent)` }
                           : undefined
                       }
                     >
-                      <span className="text-[#c9d3df] transition-colors duration-150 group-hover:text-white group-focus-visible:text-white flex items-center justify-center">
-                        <SkillIcon name={skill.name} size={18} />
-                      </span>
-                    </div>
-
-                    {/* Skill Label */}
-                    <span className="text-sm font-medium text-white/90 group-hover:text-white">
-                      {skill.name}
-                    </span>
-
-                    {/* Project dots indicator */}
-                    {skill.projects && skill.projects.length > 0 && (
-                      <div className="ml-1 flex items-center gap-1">
-                        {skill.projects.map((p) => {
-                          const dotColor =
-                            p === "pos" ? "#22c55e" : p === "healthsaral" ? "#38bdf8" : "#f59e0b";
-                          return (
-                            <span
-                              key={p}
-                              className="h-1.5 w-1.5 rounded-full"
-                              style={{ backgroundColor: dotColor }}
-                              title={`Used in ${p.toUpperCase()}`}
-                            />
-                          );
-                        })}
+                      {/* Badge: 32x32px, border-radius 9px, centered 20px icon */}
+                      <div
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] bg-[#1a2330] border border-white/10 transition-colors duration-150 group-hover:bg-[#223042]"
+                        style={
+                          isHighlighted && activeAccent
+                            ? { borderColor: activeAccent, borderWidth: 1 }
+                            : undefined
+                        }
+                      >
+                        <span className="text-[#c9d3df] transition-colors duration-150 group-hover:text-white group-focus-visible:text-white flex items-center justify-center">
+                          <SkillIcon name={skill.name} size={20} />
+                        </span>
                       </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-        ))}
-      </div>
 
-      {/* Trademark Legal Note */}
-      <footer className="mt-14 border-t border-white/10 pt-6">
-        <p className="text-xs text-[#6b7686]">
-          Logos are trademarks of their respective owners.
-        </p>
-      </footer>
+                      {/* Skill Label - larger font size */}
+                      <span className="text-[15px] sm:text-base font-semibold text-white/95 group-hover:text-white tracking-tight">
+                        {skill.name}
+                      </span>
+
+                      {/* Project dots indicator */}
+                      {skill.projects && skill.projects.length > 0 && (
+                        <div className="ml-1 flex items-center gap-1.5">
+                          {skill.projects.map((p) => {
+                            const dotColor =
+                              p === "pos" ? "#22c55e" : p === "healthsaral" ? "#38bdf8" : "#f59e0b";
+                            return (
+                              <span
+                                key={p}
+                                className="h-2 w-2 rounded-full shadow-[0_0_6px_currentColor]"
+                                style={{ backgroundColor: dotColor, color: dotColor }}
+                                title={`Used in ${p.toUpperCase()}`}
+                              />
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          ))}
+        </div>
+
+        {/* Trademark Legal Note */}
+        <footer className="mt-14 border-t border-white/10 pt-6">
+          <p className="text-xs text-[#6b7686]">
+            Logos are trademarks of their respective owners.
+          </p>
+        </footer>
+      </div>
     </div>
   );
 }

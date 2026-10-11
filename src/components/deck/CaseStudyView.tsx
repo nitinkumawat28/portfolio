@@ -96,7 +96,7 @@ const CASE_STUDIES: Record<CaseStudySlug, CaseStudyData> = {
       "Improved frontend performance through lazy loading, caching, responsive UI design, and optimized API interactions.",
     ],
     links: [
-      { label: "Live Website", href: "https://www.healthsaral.in", icon: "external" },
+      { label: "Live Website", href: "https://healthsaral.in/", icon: "external" },
       { label: "GitHub Repo", href: "https://github.com/nitinkumawat28/HealthSaral", icon: "github" },
     ],
   },

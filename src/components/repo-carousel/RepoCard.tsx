@@ -1,7 +1,7 @@
 import React from "react";
 import { motion, useTransform, type MotionValue } from "framer-motion";
 import type { DeckItem } from "../deck/types";
-import { clamp, smoothstep, wrapOffset } from "./cardMath";
+import { clamp } from "./cardMath";
 import {
   siTypescript,
   siJavascript,
@@ -18,7 +18,7 @@ import {
   siRuby,
   siSwift
 } from "simple-icons";
-import { Star, GitFork, GitBranch } from "lucide-react";
+import { Star, GitFork, ArrowUpRight, Code2, ExternalLink } from "lucide-react";
 
 const LANGUAGE_SVGS: Record<string, string> = {
   TypeScript: siTypescript.path,
@@ -43,8 +43,6 @@ type Props = {
   item: DeckItem;
   index: number;
   scroll: MotionValue<number>;
-  velocity: MotionValue<number>;
-  total: number;
   prefersReducedMotion: boolean;
   onSelect: () => void;
 };
@@ -53,57 +51,40 @@ export const RepoCard = React.memo(function RepoCard({
   item,
   index,
   scroll,
-  velocity,
-  total,
   prefersReducedMotion,
   onSelect,
 }: Props) {
-  // Continuous offset wrapped into [-N/2, N/2]
-  const rawOffset = useTransform(scroll, (s) => wrapOffset(index - s, total));
+  // Linear offset from current scroll position
+  const rawOffset = useTransform(scroll, (s) => index - s);
 
-  // Single unified transform calculation for maximum 60fps GPU compositor performance
-  const transform = useTransform([rawOffset, velocity], ([o, v]) => {
-    const offset = o as number;
-    const vel = v as number;
-
-    const x = offset * 330;
+  // Smooth 3D transform for elegant coverflow card sliding
+  const transform = useTransform(rawOffset, (offset) => {
+    const x = offset * 320;
     if (prefersReducedMotion) {
       return `translate3d(${x}px, 0, 0)`;
     }
 
-    const scale = 1 - 0.14 * Math.min(Math.abs(offset), 2);
-    const z = -120 * Math.min(Math.abs(offset), 2);
-    const rotY = clamp(offset * 8 - vel * 35, -75, 75);
+    const absOffset = Math.abs(offset);
+    const scale = Math.max(0.84, 1 - absOffset * 0.12);
+    const z = -Math.min(absOffset * 85, 240);
+    const rotY = clamp(offset * -14, -28, 28);
 
-    const t = smoothstep(1.4, 2.8, Math.abs(offset));
-    const scaleX = 1 + 0.35 * t * t;
-    const skewY = Math.sign(offset) * 5 * t;
-
-    return `translate3d(${x}px, 0, ${z}px) scale(${scale}) scaleX(${scaleX}) rotateY(${rotY}deg) skewY(${skewY}deg)`;
+    return `translate3d(${x}px, 0, ${z}px) scale(${scale}) rotateY(${rotY}deg)`;
   });
 
-  const transformOrigin = useTransform(rawOffset, (o) => (o < 0 ? "right center" : "left center"));
-
-  const opacity = useTransform(rawOffset, (o) => {
-    const absO = Math.abs(o);
-    if (absO > 3.4) return 0;
-    if (absO > 2.4) return clamp(1 - (absO - 2.4), 0, 1);
-    return 1;
+  const opacity = useTransform(rawOffset, (offset) => {
+    const absO = Math.abs(offset);
+    if (absO > 2.6) return 0;
+    if (absO > 1.8) return clamp(1 - (absO - 1.8) * 1.25, 0, 1);
+    return clamp(1 - absO * 0.22, 0.45, 1);
   });
 
-  const visibility = useTransform(rawOffset, (o) => (Math.abs(o) > 3.4 ? "hidden" : "visible"));
-  const zIndex = useTransform(rawOffset, (o) => Math.round(100 - Math.abs(o) * 10));
-
-  // Subtle rim glow opacity on outer stretched cards
-  const rimOpacity = useTransform(rawOffset, (o) => {
-    if (prefersReducedMotion) return 0;
-    return smoothstep(1.4, 2.8, Math.abs(o));
-  });
+  const visibility = useTransform(rawOffset, (offset) => (Math.abs(offset) > 2.6 ? "hidden" : "visible"));
+  const zIndex = useTransform(rawOffset, (offset) => Math.round(100 - Math.abs(offset) * 10));
 
   // Extract repo details
   const stars = item.stats.find((s) => s.label.toLowerCase().includes("star"))?.value ?? 0;
   const forks = item.stats.find((s) => s.label.toLowerCase().includes("fork"))?.value ?? 0;
-  const branch = item.stats.find((s) => s.label.toLowerCase().includes("branch"))?.value ?? "main";
   const langStat = item.stats.find((s) => s.label.toLowerCase().includes("language"))?.value;
   const mainLang = typeof langStat === "string" ? langStat : "Code";
 
@@ -114,101 +95,139 @@ export const RepoCard = React.memo(function RepoCard({
   const year = yearMatch[0] || "2026";
 
   const accentColor = item.accent || "#3b82f6";
+  const tags = item.tags || [mainLang, "Open Source"];
+
+  const primaryAction = item.actions.find((a) => a.variant === "primary") || item.actions[0];
+  const liveAction = item.actions.find((a) => a.label.toLowerCase().includes("live"));
 
   return (
     <motion.div
       onClick={onSelect}
       style={{
         transform,
-        transformOrigin,
+        transformOrigin: "center center",
         opacity,
         visibility,
         zIndex,
         backfaceVisibility: "visible",
         WebkitBackfaceVisibility: "visible",
       }}
-      className="absolute top-1/2 left-1/2 -ml-[135px] -mt-[195px] sm:-ml-[155px] sm:-mt-[205px] h-[390px] w-[270px] sm:h-[410px] sm:w-[310px] cursor-pointer rounded-[28px] select-none transform-gpu"
+      className="absolute top-1/2 left-1/2 -ml-[145px] -mt-[195px] sm:-ml-[165px] sm:-mt-[205px] h-[390px] w-[290px] sm:h-[410px] sm:w-[330px] cursor-pointer rounded-[28px] select-none transform-gpu"
     >
-      {/* Outer Rim Glow (fades in when stretched) */}
-      <motion.div
-        style={{ opacity: rimOpacity }}
-        className="pointer-events-none absolute inset-0 rounded-[28px] overflow-hidden z-20 border-2 border-cyan-400/50 shadow-[0_0_20px_rgba(56,189,248,0.4)]"
-      />
-
       {/* Card Face */}
-      <div
-        className="relative h-full w-full rounded-[28px] overflow-hidden flex flex-col justify-between p-6 sm:p-7 text-white border border-white/10"
+      <motion.div
+        initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.94 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.35, delay: index * 0.06, ease: [0.16, 1, 0.3, 1] }}
+        className="relative h-full w-full rounded-[28px] overflow-hidden flex flex-col justify-between p-6 sm:p-7 text-white border border-white/12 shadow-2xl"
         style={{
-          background: `radial-gradient(circle at 18% 15%, rgba(255, 255, 255, 0.12) 0%, transparent 55%), linear-gradient(155deg, ${accentColor}33 0%, #0d121a 50%, #05070a 100%)`,
-          boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.85)",
+          background: `radial-gradient(circle at 18% 15%, rgba(255, 255, 255, 0.12) 0%, transparent 55%), linear-gradient(155deg, ${accentColor}24 0%, #0c1018 50%, #05070c 100%)`,
+          boxShadow: "0 20px 45px -10px rgba(0, 0, 0, 0.8)",
         }}
       >
-        {/* Top Header: Title & Description */}
+        {/* Subtle Background Watermark Logo */}
+        {svgPath && (
+          <div className="pointer-events-none absolute -right-4 -bottom-4 opacity-[0.05] transform rotate-12">
+            <svg viewBox="0 0 24 24" className="h-[160px] w-[160px] text-white" fill="currentColor">
+              <path d={svgPath} />
+            </svg>
+          </div>
+        )}
+
+        {/* Top Header: Prominent Heading & Language Tag */}
         <div className="relative z-10">
-          <div className="flex items-start justify-between gap-2">
-            <h3 className="text-[18px] sm:text-[20px] font-bold text-white tracking-tight truncate leading-snug">
+          <div className="flex items-start justify-between gap-3 mb-2.5">
+            <h3 className="text-[26px] sm:text-[29px] font-black text-white tracking-tight leading-tight truncate">
               {item.title}
             </h3>
             <span
-              className="mt-1.5 h-2 w-2 shrink-0 rounded-full"
-              style={{ backgroundColor: accentColor }}
+              className="mt-2 h-2.5 w-2.5 shrink-0 rounded-full shadow-[0_0_8px_currentColor]"
+              style={{ backgroundColor: accentColor, color: accentColor }}
             />
           </div>
-          <p className="mt-2 text-[13px] text-white/75 line-clamp-2 leading-relaxed">
+
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border border-white/10 bg-white/5">
+            <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: accentColor }} />
+            <span className="text-white/90">{mainLang}</span>
+          </div>
+
+          <p className="mt-3 text-[13px] sm:text-[13.5px] text-white/70 line-clamp-3 leading-relaxed">
             {item.description}
           </p>
         </div>
 
-        {/* Center: Language Logo */}
-        <div className="relative z-10 flex flex-1 items-center justify-center my-3 pointer-events-none">
-          {svgPath ? (
-            <svg
-              viewBox="0 0 24 24"
-              className="h-[75px] w-[75px] sm:h-[88px] sm:w-[88px] text-white/30 drop-shadow-[0_2px_10px_rgba(255,255,255,0.1)]"
-              fill="currentColor"
-            >
-              <path d={svgPath} />
-            </svg>
-          ) : (
-            <div className="flex h-[75px] w-[75px] sm:h-[88px] sm:w-[88px] items-center justify-center text-5xl font-bold text-white/30">
-              {(item.title[0] || "G").toUpperCase()}
-            </div>
-          )}
-        </div>
-
-        {/* Bottom Details & Metrics */}
-        <div className="relative z-10 flex flex-col gap-2.5">
-          {/* Quick Metrics Bar */}
-          <div className="flex items-center gap-3 text-[12px] font-medium text-white/60">
-            <span className="flex items-center gap-1">
-              <Star size={13} className="text-amber-400" />
-              {stars}
-            </span>
-            <span>·</span>
-            <span className="flex items-center gap-1">
-              <GitFork size={13} className="text-blue-400" />
-              {forks}
-            </span>
-            <span>·</span>
-            <span className="flex items-center gap-1 text-white/45">
-              <GitBranch size={12} />
-              {branch}
-            </span>
-          </div>
-
-          {/* Bottom Row */}
-          <div className="flex items-center justify-between text-[13px] font-medium text-white/80 border-t border-white/10 pt-2.5">
-            <span className="flex items-center gap-1.5 font-semibold">
+        {/* Middle: Clean Tech Stack Pills */}
+        <div className="relative z-10 my-auto py-2">
+          <div className="flex flex-wrap gap-1.5">
+            {tags.slice(0, 4).map((tag) => (
               <span
-                className="h-2 w-2 rounded-full inline-block"
-                style={{ backgroundColor: accentColor }}
-              />
-              {mainLang}
-            </span>
-            <span className="text-white/50 text-xs">{year}</span>
+                key={tag}
+                className="px-2.5 py-1 rounded-lg border border-white/10 bg-white/[0.04] text-[11px] sm:text-xs font-medium text-white/80"
+              >
+                {tag}
+              </span>
+            ))}
           </div>
         </div>
-      </div>
+
+        {/* Bottom: Clean Metrics & Action Buttons */}
+        <div className="relative z-10 flex flex-col gap-3 border-t border-white/10 pt-3">
+          {/* Quick Metrics */}
+          <div className="flex items-center justify-between text-xs font-medium text-white/55">
+            <div className="flex items-center gap-3">
+              <span className="flex items-center gap-1">
+                <Star size={13} className="text-amber-400" />
+                {stars}
+              </span>
+              <span>·</span>
+              <span className="flex items-center gap-1">
+                <GitFork size={13} className="text-blue-400" />
+                {forks}
+              </span>
+            </div>
+            <span className="text-white/40 text-xs font-mono">{year}</span>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex items-center gap-2">
+            <a
+              href={primaryAction?.href || `https://github.com/nitinkumawat28/${item.title}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              onPointerDown={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation();
+                const url = primaryAction?.href || `https://github.com/nitinkumawat28/${item.title}`;
+                if (url) window.open(url, "_blank", "noopener,noreferrer");
+              }}
+              className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-white text-black font-bold text-xs shadow-md transition-transform hover:scale-[1.03] active:scale-95 cursor-pointer z-20"
+            >
+              <Code2 size={14} />
+              <span>View Code</span>
+              <ArrowUpRight size={13} />
+            </a>
+
+            {liveAction?.href && (
+              <a
+                href={liveAction.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  window.open(liveAction.href, "_blank", "noopener,noreferrer");
+                }}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl border border-white/20 bg-white/5 text-white font-semibold text-xs transition-colors hover:bg-white/15 active:scale-95 cursor-pointer z-20"
+              >
+                <ExternalLink size={13} />
+                <span>Live Demo</span>
+              </a>
+            )}
+          </div>
+        </div>
+      </motion.div>
     </motion.div>
   );
 });
+
+export default RepoCard;

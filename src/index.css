@@ -27,3 +27,38 @@
   50% { transform: translateY(-8px); }
   100% { transform: translateY(0px); }
 }
+
+/* Floating background skill logos */
+@keyframes float-logo {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(calc(var(--rot, 0deg) - var(--drot, 3.5deg)));
+  }
+  100% {
+    transform: translate3d(var(--dx, 6px), calc(-1 * var(--dy, 12px)), 0) rotate(calc(var(--rot, 0deg) + var(--drot, 3.5deg)));
+  }
+}
+
+.floating-logo {
+  animation: float-logo var(--dur, 16s) ease-in-out var(--delay, 0s) infinite alternate;
+  transition: opacity 300ms ease;
+}
+
+.floating-layer {
+  will-change: transform;
+  transform: translate3d(calc(var(--mx, 0px) * var(--depth-factor, 1)), calc(var(--my, 0px) * var(--depth-factor, 1)), 0);
+  transition: transform 120ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-logo {
+    animation: none !important;
+  }
+  .floating-layer {
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+.tab-paused .floating-logo {
+  animation-play-state: paused !important;
+}

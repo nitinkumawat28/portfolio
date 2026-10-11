@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { ArrowLeft, ExternalLink } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { ProjectsFolderView } from './components/deck/ProjectsFolderView';
 import { GitReposFolderView } from './components/deck/GitReposFolderView';
 import { CaseStudyView } from './components/deck/CaseStudyView';
 import { SkillsFolderView } from './components/skills/SkillsFolderView';
+import { AchievementsFolderView } from './components/deck/AchievementsFolderView';
 
 interface Props {
   folderId: string;
@@ -31,98 +32,7 @@ export function FolderContent({ folderId }: Props) {
     achievements: {
       title: "Achievements & Certificates",
       description: "Professional job simulations, technical credentials, and verified certifications.",
-      items: (
-        <div className="mt-8 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {[
-              {
-                title: "Deloitte Cyber Job Simulation",
-                organization: "Deloitte • Forage",
-                date: "2024",
-                category: "Cybersecurity & Risk",
-                certificateUrl: "https://drive.google.com/file/d/1DPQWwiEMWF1w9j1MbVTO6CH3d75SNOba/view?usp=sharing",
-                description: "Practical simulation tackling real-world cybersecurity scenarios, enterprise vulnerability assessments, network forensic analysis, and security architectures.",
-                skills: ["Cyber Defense", "Risk Assessment", "Network Forensics", "Security Best Practices"]
-              },
-              {
-                title: "Skyscanner Front-End Software Engineering",
-                organization: "Skyscanner • Forage",
-                date: "2024",
-                category: "Software Engineering",
-                certificateUrl: "https://drive.google.com/file/d/1VXrogIHqEqtRynTzt3BlNGDemikAKB2F/view?usp=sharing",
-                description: "Built responsive user interface components, interactive date picker workflows, and practiced production-grade front-end code reviews following Skyscanner standards.",
-                skills: ["React.js", "Front-End Architecture", "Design Systems", "Web Performance"]
-              },
-              {
-                title: "AI Search Operating System Certification",
-                organization: "Semrush Academy",
-                date: "2025",
-                category: "AI & Search Systems",
-                certificateUrl: "https://drive.google.com/file/d/1Xcm4d4B_ZkOzieNIk0rwETh2HmspC-zJ/view?usp=sharing",
-                description: "Specialized certification in generative AI search algorithms, Search Generative Experience (SGE), semantic entity authority, and high-impact SEO discoverability.",
-                skills: ["AI Search Engines", "Semrush", "SGE Optimization", "Semantic SEO"]
-              },
-              {
-                title: "AI Tool Workshop Certification",
-                organization: "be10x",
-                date: "2024",
-                category: "Artificial Intelligence",
-                certificateUrl: "https://drive.google.com/file/d/1j9JwBxuDwv4PqUqpXz2oRdQXcCnKH-vW/view?usp=sharing",
-                description: "Intensive hands-on workshop focused on generative AI tools, prompt engineering methodologies, agentic workflows, and productivity automation systems.",
-                skills: ["Generative AI", "Prompt Engineering", "Workflow Automation", "LLM APIs"]
-              }
-            ].map((cert, index) => (
-              <div 
-                key={index}
-                className="bg-[#16181d] p-6 rounded-2xl border border-white/10 hover:border-amber-400/30 transition-all flex flex-col justify-between group shadow-lg"
-              >
-                <div>
-                  <div className="flex items-start justify-between gap-3 mb-2">
-                    <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20">
-                      {cert.category}
-                    </span>
-                    <span className="text-xs text-white/40">{cert.date}</span>
-                  </div>
-
-                  <h4 className="text-lg font-bold text-white group-hover:text-amber-300 transition-colors mt-2 mb-1">
-                    {cert.title}
-                  </h4>
-                  <p className="text-xs font-medium text-white/50 mb-3">{cert.organization}</p>
-                  
-                  <p className="text-sm text-white/70 leading-relaxed mb-5">
-                    {cert.description}
-                  </p>
-                </div>
-
-                <div className="pt-4 border-t border-white/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                  <div className="flex flex-wrap gap-1.5">
-                    {cert.skills.map(skill => (
-                      <span 
-                        key={skill} 
-                        className="text-[11px] px-2 py-0.5 rounded-md bg-white/5 text-white/60 border border-white/5"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-
-                  {cert.certificateUrl && (
-                    <a
-                      href={cert.certificateUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-300/90 hover:text-amber-200 transition-colors shrink-0 px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20"
-                    >
-                      <span>View Certificate</span>
-                      <ExternalLink size={12} />
-                    </a>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )
+      items: <AchievementsFolderView />
     },
     skills: {
       title: "Technical Skills",

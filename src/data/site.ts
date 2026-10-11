@@ -21,7 +21,7 @@ const defaultSiteData = {
     text: "AI-powered health report analyzer that turns complex medical reports into easy-to-understand language.",
     views: "20 daily active users",
     timeAgo: "2026",
-    url: "https://www.healthsaral.in"
+    url: "https://healthsaral.in/"
   },
   folders: [
     { id: "projects", title: "Projects", isFeatured: false, color: "pink" },

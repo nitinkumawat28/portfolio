@@ -22,8 +22,8 @@ export const deckProjects: ProjectEntry[] = [
       { value: "AWS S3", label: "Asset storage" },
     ],
     accent: "#22c55e",
-    image: "/projects/pos.webp",
-    imageAlt: "3D AR Restaurant POS interface with interactive food visualization",
+    image: "/projects/pos.jpg",
+    imageAlt: "3D AR Restaurant POS mobile ordering system with interactive food preview and table view",
     links: [{ label: "GitHub", href: "https://github.com/nitinkumawat28/tablemate-pos", variant: "ghost" }],
   },
   {
@@ -41,7 +41,7 @@ export const deckProjects: ProjectEntry[] = [
     image: "/projects/healthsaral.png",
     imageAlt: "HealthSaral report analyzer",
     links: [
-      { label: "Live site", href: "https://www.healthsaral.in", variant: "ghost" },
+      { label: "Live site", href: "https://healthsaral.in/", variant: "ghost" },
       { label: "GitHub", href: "https://github.com/nitinkumawat28/HealthSaral", variant: "ghost" },
     ],
   },

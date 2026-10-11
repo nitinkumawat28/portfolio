@@ -23,4 +23,6 @@ export type DeckItem = {
   image?: string;
   imageAlt?: string;
   actions: DeckAction[];
+  tags?: string[];
+  highlights?: string[];
 };

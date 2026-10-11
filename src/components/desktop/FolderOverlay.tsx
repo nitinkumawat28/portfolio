@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import { ProjectsFolderView } from "../deck/ProjectsFolderView";
 import { GitReposFolderView } from "../deck/GitReposFolderView";
+import { AchievementsFolderView } from "../deck/AchievementsFolderView";
 import { CaseStudyView } from "../deck/CaseStudyView";
 import { SkillsFolderView } from "../skills/SkillsFolderView";
 import { FolderContent } from "../../FolderContent";
@@ -64,9 +65,7 @@ export function FolderOverlay({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.15, ease: "easeOut" }}
-        className={`fixed inset-0 z-40 flex flex-col ${
-          folderId === "repositories" ? "bg-[#050505]" : "bg-[#0a0e14]/96 backdrop-blur-md"
-        } will-change-transform transform-gpu`}
+        className="fixed inset-0 z-40 flex flex-col bg-[#070a10] will-change-transform transform-gpu"
       >
         {/* Top Control Bar (positioned below TopBar at top-20) */}
         <div className="pt-20 px-6 sm:px-10 flex items-center justify-between pb-3 border-b border-white/10 shrink-0">
@@ -79,6 +78,10 @@ export function FolderOverlay({
                 ? "Interactive Projects Deck"
                 : folderId === "repositories"
                 ? "Git Repositories"
+                : folderId === "skills"
+                ? "Technical Skills"
+                : folderId === "achievements"
+                ? "Achievements & Certificates"
                 : `Folder / ${folderId}`}
             </span>
           </div>
@@ -100,7 +103,15 @@ export function FolderOverlay({
         </div>
 
         {/* Scrollable content container with bottom padding for ChatBar */}
-        <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 pb-28">
+        <div
+          className={`flex-1 overflow-y-auto overflow-x-hidden px-4 md:px-8 ${
+            folderId === "repositories"
+              ? "py-4 pb-32"
+              : folderId === "skills" || folderId === "achievements"
+              ? "py-6 pb-36"
+              : "py-6 pb-28"
+          }`}
+        >
           {activeCaseStudy ? (
             <CaseStudyView
               slug={activeCaseStudy}
@@ -122,6 +133,8 @@ export function FolderOverlay({
             <GitReposFolderView />
           ) : folderId === "skills" ? (
             <SkillsFolderView />
+          ) : folderId === "achievements" ? (
+            <AchievementsFolderView />
           ) : isCaseStudySlug ? (
             <CaseStudyView slug={folderId} onBack={onClose} />
           ) : (
