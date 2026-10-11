@@ -10,14 +10,11 @@ interface Props {
   constraintsRef?: React.RefObject<HTMLElement>;
 }
 
-export function PdfFile({ zIndex, onBringToFront, url, constraintsRef }: Props) {
-  const resumeUrl = url || siteData.customPdfBase64 || '/resume.pdf';
-
+export function PdfFile({ zIndex, onBringToFront, constraintsRef }: Props) {
   const handleOpenPdf = () => {
-    // Exact same file and download behavior as the 'Get CV' button
+    // Open resume PDF directly in a new tab for viewing (not downloading)
     const link = document.createElement('a');
-    link.href = resumeUrl;
-    link.download = 'resume.pdf';
+    link.href = '/resume.pdf';
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
     document.body.appendChild(link);
