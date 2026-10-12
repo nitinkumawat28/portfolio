@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 
 interface NotFoundProps {
   path?: string;
@@ -225,39 +225,64 @@ export function NotFound({ path }: NotFoundProps) {
               </p>
             </div>
 
-            {/* Creative & Simple "Take Me Back Home" Interactive Button */}
+            {/* Ultra-Stylish & Creative Editorial "Take Me Back Home" Centerpiece */}
             <a
               href="/"
-              className="group relative inline-flex items-center gap-3.5 px-6 py-3.5 sm:px-7 sm:py-4 rounded-full border border-white/15 bg-white/[0.04] backdrop-blur-md transition-all duration-300 hover:border-[#f4eedb]/60 hover:bg-white/[0.08] hover:scale-105 active:scale-95 shadow-xl hover:shadow-[0_0_35px_rgba(244,238,219,0.15)] cursor-pointer"
+              className="group relative flex flex-col items-center justify-center p-6 sm:p-8 rounded-2xl transition-all duration-500 hover:scale-[1.03] active:scale-[0.98] cursor-pointer"
             >
-              {/* Subtle pulsing green indicator dot */}
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
-              </span>
+              {/* Ethereal Champagne Backlight Bloom on Hover */}
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-amber-500/0 via-[#f4eedb]/10 to-amber-500/0 opacity-0 group-hover:opacity-100 blur-2xl transition-opacity duration-700 pointer-events-none" />
 
-              {/* Elegant single-line typography */}
-              <span className="font-['DM_Serif_Display',serif] italic text-xl sm:text-2xl md:text-[1.65rem] text-[#f4eedb] tracking-tight group-hover:text-white transition-colors whitespace-nowrap">
-                Take Me Back Home
-              </span>
+              {/* Architectural Film Crop Marks / Corner Accents */}
+              <span className="absolute top-0 left-0 text-[10px] font-mono text-white/20 group-hover:text-[#f4eedb]/70 transition-colors duration-300">┌</span>
+              <span className="absolute top-0 right-0 text-[10px] font-mono text-white/20 group-hover:text-[#f4eedb]/70 transition-colors duration-300">┐</span>
+              <span className="absolute bottom-0 left-0 text-[10px] font-mono text-white/20 group-hover:text-[#f4eedb]/70 transition-colors duration-300">└</span>
+              <span className="absolute bottom-0 right-0 text-[10px] font-mono text-white/20 group-hover:text-[#f4eedb]/70 transition-colors duration-300">┘</span>
 
-              {/* Forward animated arrow */}
-              <span className="font-mono text-sm sm:text-base text-[#737373] group-hover:text-[#f4eedb] group-hover:translate-x-1 transition-all">
-                &rarr;
+              {/* Top Meta Label with Live Signal Indicator */}
+              <div className="flex items-center gap-2 mb-3.5 text-[10px] font-mono tracking-[0.2em] text-[#737373] group-hover:text-[#a3a3a3] uppercase transition-colors">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400" />
+                </span>
+                <span>ESC // RETURN TO ROOT</span>
+              </div>
+
+              {/* Main Typographic Headline with Kinetic Arrow Token */}
+              <div className="relative inline-flex items-center gap-3 sm:gap-4 select-none">
+                <h1 className="font-['DM_Serif_Display',serif] text-2xl sm:text-3xl md:text-4xl text-[#f4eedb] tracking-tight whitespace-nowrap group-hover:text-white transition-colors duration-300">
+                  <span className="italic font-light">Take </span>
+                  <span className="italic font-light">Me </span>
+                  <span className="italic font-light">Back </span>
+                  <span className="not-italic font-normal">Home</span>
+                </h1>
+
+                {/* Floating Glass Orb Arrow Token */}
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-white/15 bg-white/[0.04] backdrop-blur-md flex items-center justify-center text-[#f4eedb]/75 group-hover:text-white group-hover:border-[#f4eedb]/50 group-hover:bg-[#f4eedb]/10 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300 shadow-lg">
+                  <ArrowUpRight size={17} className="transition-transform duration-300 group-hover:rotate-45" />
+                </div>
+              </div>
+
+              {/* Interactive Expanding Light Ray */}
+              <div className="mt-3.5 h-[1px] w-12 group-hover:w-full bg-gradient-to-r from-transparent via-[#f4eedb]/70 to-transparent transition-all duration-500 ease-out" />
+
+              {/* Secondary Subtext Prompt */}
+              <span className="text-[9px] font-mono tracking-widest text-white/30 uppercase mt-2.5 group-hover:text-white/60 transition-colors duration-300">
+                CLICK TO RESTORE DESKTOP SESSION
               </span>
             </a>
 
             {/* Back button option */}
             <button
               onClick={() => window.history.back()}
-              className="inline-flex items-center gap-2 text-xs font-mono text-[#737373] hover:text-[#f4eedb] transition-colors cursor-pointer group pt-1"
+              className="inline-flex items-center gap-2 text-xs font-mono text-[#737373] hover:text-[#f4eedb] transition-colors cursor-pointer group"
             >
               <ArrowLeft size={13} className="group-hover:-translate-x-1 transition-transform" />
               <span>Or return to previous page</span>
             </button>
 
             {path && (
-              <div className="text-[10px] font-mono text-[#525252] tracking-wider pt-1">
+              <div className="text-[10px] font-mono text-[#525252] tracking-wider">
                 REQUESTED_URI: {path}
               </div>
             )}
