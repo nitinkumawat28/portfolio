@@ -50,40 +50,40 @@ export function NotFound({ path }: NotFoundProps) {
   return (
     <div
       onMouseMove={handleMouseMove}
-      className="relative min-h-screen w-full bg-[#12130e] text-[#b0aba0] font-mono selection:bg-[#f4eedb]/20 selection:text-[#f4eedb] overflow-hidden flex flex-col justify-between select-none"
+      className="relative min-h-screen w-full bg-[var(--color-brand-bg)] text-[#a3a3a3] font-mono selection:bg-white/20 selection:text-white overflow-hidden flex flex-col justify-between select-none"
     >
       {/* Subtle vintage film grain overlay */}
       <div 
-        className="pointer-events-none fixed inset-0 opacity-[0.035] mix-blend-overlay z-50"
+        className="pointer-events-none fixed inset-0 opacity-[0.03] mix-blend-overlay z-50"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
         }} 
       />
 
       {/* 3-Column Editorial Grid Layout */}
-      <div className="relative z-10 w-full flex-1 grid grid-cols-1 md:grid-cols-3 max-w-[1550px] mx-auto border-x border-[#2c2c24]/50">
+      <div className="relative z-10 w-full flex-1 grid grid-cols-1 md:grid-cols-3 max-w-[1550px] mx-auto border-x border-white/10">
         
         {/* ================= LEFT COLUMN ================= */}
         <div 
-          className="hidden md:flex flex-col justify-between p-8 lg:p-12 border-r border-[#2c2c24]/50 relative transition-transform duration-75 ease-out will-change-transform"
+          className="hidden md:flex flex-col justify-between p-8 lg:p-12 border-r border-white/10 relative transition-transform duration-75 ease-out will-change-transform"
           style={{ transform: `translateY(${leftColOffset}px)` }}
         >
           {/* Top Edge Text */}
-          <div className="opacity-40 text-[10px] tracking-widest text-[#787569] uppercase font-mono">
+          <div className="opacity-40 text-[10px] tracking-widest text-[#737373] uppercase font-mono">
             REMOVED FROM THE BACKSTAGE.
           </div>
 
           {/* Left 404 Block */}
           <div className="my-auto py-12 flex flex-col items-center text-center">
             {/* Stamp Circle Badges */}
-            <div className="flex items-center gap-1.5 mb-3 text-[11px] text-[#787569]">
-              <span className="w-5 h-5 rounded-full border border-[#787569]/60 flex items-center justify-center font-bold">C</span>
-              <span className="w-5 h-5 rounded-full border border-[#787569]/60 flex items-center justify-center font-bold">H</span>
-              <span className="w-5 h-5 rounded-full border border-[#787569]/60 flex items-center justify-center font-bold">E</span>
+            <div className="flex items-center gap-1.5 mb-3 text-[11px] text-[#737373]">
+              <span className="w-5 h-5 rounded-full border border-[#737373]/60 flex items-center justify-center font-bold">C</span>
+              <span className="w-5 h-5 rounded-full border border-[#737373]/60 flex items-center justify-center font-bold">H</span>
+              <span className="w-5 h-5 rounded-full border border-[#737373]/60 flex items-center justify-center font-bold">E</span>
             </div>
 
             {/* Info Missing headline */}
-            <h2 className="text-xs lg:text-sm font-mono tracking-wider text-[#a09c8e] uppercase mb-1">
+            <h2 className="text-xs lg:text-sm font-mono tracking-wider text-[#a3a3a3] uppercase mb-1">
               INFO MISSING // PAGE NOT FOUND
             </h2>
 
@@ -95,26 +95,26 @@ export function NotFound({ path }: NotFoundProps) {
               >
                 404
               </span>
-              <span className="absolute top-4 -right-5 text-sm lg:text-base font-mono text-[#787569] border border-[#787569]/50 rounded-full w-5 h-5 flex items-center justify-center">
+              <span className="absolute top-4 -right-5 text-sm lg:text-base font-mono text-[#737373] border border-[#737373]/50 rounded-full w-5 h-5 flex items-center justify-center">
                 ®
               </span>
             </div>
 
             {/* Secondary subtitle */}
-            <p className="text-[10px] lg:text-[11px] text-[#787569] max-w-xs font-mono uppercase tracking-wide leading-relaxed mt-2">
+            <p className="text-[10px] lg:text-[11px] text-[#737373] max-w-xs font-mono uppercase tracking-wide leading-relaxed mt-2">
               THE RESOURCE MAY HAVE BEEN DEPRECATED OR REMOVED FROM THE BACKSTAGE.
             </p>
           </div>
 
           {/* Bottom Cut Glitch Repeat Block */}
           <div className="opacity-75 blur-[0.6px] translate-y-4">
-            <div className="flex items-center justify-center gap-1.5 mb-1 text-[9px] text-[#787569]">
-              <span className="w-4 h-4 rounded-full border border-[#787569]/40 flex items-center justify-center">C</span>
-              <span className="w-4 h-4 rounded-full border border-[#787569]/40 flex items-center justify-center">H</span>
-              <span className="w-4 h-4 rounded-full border border-[#787569]/40 flex items-center justify-center">E</span>
+            <div className="flex items-center justify-center gap-1.5 mb-1 text-[9px] text-[#737373]">
+              <span className="w-4 h-4 rounded-full border border-[#737373]/40 flex items-center justify-center">C</span>
+              <span className="w-4 h-4 rounded-full border border-[#737373]/40 flex items-center justify-center">H</span>
+              <span className="w-4 h-4 rounded-full border border-[#737373]/40 flex items-center justify-center">E</span>
             </div>
             <p 
-              className="text-[10px] font-mono tracking-wider text-[#c0bbb0] text-center uppercase"
+              className="text-[10px] font-mono tracking-wider text-[#d4d4d4] text-center uppercase"
               style={{
                 textShadow: '-2px 0 1px #00ffff, 2px 0 1px #ff0055, 0 1px 2px #ffee00',
               }}
@@ -126,18 +126,18 @@ export function NotFound({ path }: NotFoundProps) {
 
         {/* ================= CENTER COLUMN (MAIN ACTION) ================= */}
         <div 
-          className="relative flex flex-col justify-between py-10 px-6 sm:px-10 border-r border-[#2c2c24]/50 overflow-hidden transition-transform duration-75 ease-out will-change-transform"
+          className="relative flex flex-col justify-between py-10 px-6 sm:px-10 border-r border-white/10 overflow-hidden transition-transform duration-75 ease-out will-change-transform"
           style={{ transform: `translateY(${centerColOffset}px)` }}
         >
           {/* Vertical Ruler Hash Ticks on left boundary */}
-          <div className="absolute left-1 top-0 bottom-0 flex flex-col justify-between py-6 text-[8px] text-[#4d4c3f] font-mono select-none pointer-events-none hidden sm:flex">
+          <div className="absolute left-1 top-0 bottom-0 flex flex-col justify-between py-6 text-[8px] text-[#404040] font-mono select-none pointer-events-none hidden sm:flex">
             {rulerNumbers.map((num, i) => (
               <span key={`l-${i}`} className="tracking-tighter">- {num}</span>
             ))}
           </div>
 
           {/* Vertical Ruler Hash Ticks on right boundary */}
-          <div className="absolute right-1 top-0 bottom-0 flex flex-col justify-between py-6 text-[8px] text-[#4d4c3f] font-mono select-none pointer-events-none hidden sm:flex">
+          <div className="absolute right-1 top-0 bottom-0 flex flex-col justify-between py-6 text-[8px] text-[#404040] font-mono select-none pointer-events-none hidden sm:flex">
             {rulerNumbers.map((num, i) => (
               <span key={`r-${i}`} className="tracking-tighter">{num} -</span>
             ))}
@@ -145,7 +145,7 @@ export function NotFound({ path }: NotFoundProps) {
 
           {/* Top text: YOU CAN ENJOY HERE */}
           <div className="text-center pt-2">
-            <span className="text-[10px] sm:text-[11px] font-mono tracking-[0.25em] text-[#787569] uppercase">
+            <span className="text-[10px] sm:text-[11px] font-mono tracking-[0.25em] text-[#737373] uppercase">
               YOU CAN ENJOY HERE
             </span>
           </div>
@@ -155,12 +155,12 @@ export function NotFound({ path }: NotFoundProps) {
             
             {/* Mobile View 404 Headline */}
             <div className="md:hidden flex flex-col items-center text-center mb-4">
-              <div className="flex items-center gap-1.5 mb-2 text-[10px] text-[#787569]">
-                <span className="w-5 h-5 rounded-full border border-[#787569]/60 flex items-center justify-center">C</span>
-                <span className="w-5 h-5 rounded-full border border-[#787569]/60 flex items-center justify-center">H</span>
-                <span className="w-5 h-5 rounded-full border border-[#787569]/60 flex items-center justify-center">E</span>
+              <div className="flex items-center gap-1.5 mb-2 text-[10px] text-[#737373]">
+                <span className="w-5 h-5 rounded-full border border-[#737373]/60 flex items-center justify-center">C</span>
+                <span className="w-5 h-5 rounded-full border border-[#737373]/60 flex items-center justify-center">H</span>
+                <span className="w-5 h-5 rounded-full border border-[#737373]/60 flex items-center justify-center">E</span>
               </div>
-              <h2 className="text-xs font-mono tracking-wider text-[#a09c8e] uppercase">
+              <h2 className="text-xs font-mono tracking-wider text-[#a3a3a3] uppercase">
                 INFO MISSING // PAGE NOT FOUND
               </h2>
               <div className="relative inline-block my-1">
@@ -170,11 +170,11 @@ export function NotFound({ path }: NotFoundProps) {
                 >
                   404
                 </span>
-                <span className="absolute top-2 -right-4 text-xs font-mono text-[#787569] border border-[#787569]/50 rounded-full w-4 h-4 flex items-center justify-center">
+                <span className="absolute top-2 -right-4 text-xs font-mono text-[#737373] border border-[#737373]/50 rounded-full w-4 h-4 flex items-center justify-center">
                   ®
                 </span>
               </div>
-              <p className="text-[10px] text-[#787569] max-w-xs font-mono uppercase tracking-wide">
+              <p className="text-[10px] text-[#737373] max-w-xs font-mono uppercase tracking-wide">
                 THE RESOURCE MAY HAVE BEEN DEPRECATED OR REMOVED FROM THE BACKSTAGE.
               </p>
             </div>
@@ -197,14 +197,14 @@ export function NotFound({ path }: NotFoundProps) {
             {/* Back button option */}
             <button
               onClick={() => window.history.back()}
-              className="inline-flex items-center gap-2 text-xs font-mono text-[#787569] hover:text-[#f4eedb] transition-colors cursor-pointer pt-2 group"
+              className="inline-flex items-center gap-2 text-xs font-mono text-[#737373] hover:text-[#f4eedb] transition-colors cursor-pointer pt-2 group"
             >
               <ArrowLeft size={13} className="group-hover:-translate-x-1 transition-transform" />
               <span>Or return to previous page</span>
             </button>
 
             {path && (
-              <div className="text-[10px] font-mono text-[#5c594f] tracking-wider">
+              <div className="text-[10px] font-mono text-[#525252] tracking-wider">
                 REQUESTED_URI: {path}
               </div>
             )}
@@ -212,7 +212,7 @@ export function NotFound({ path }: NotFoundProps) {
 
           {/* Bottom text: ONLY DOPE STUFF */}
           <div className="text-center pb-2">
-            <span className="text-[10px] sm:text-[11px] font-mono tracking-[0.25em] text-[#787569] uppercase">
+            <span className="text-[10px] sm:text-[11px] font-mono tracking-[0.25em] text-[#737373] uppercase">
               ONLY DOPE STUFF
             </span>
           </div>
@@ -224,21 +224,21 @@ export function NotFound({ path }: NotFoundProps) {
           style={{ transform: `translateY(${rightColOffset}px)` }}
         >
           {/* Top Edge */}
-          <div className="opacity-40 text-[10px] tracking-widest text-[#787569] uppercase font-mono text-right">
+          <div className="opacity-40 text-[10px] tracking-widest text-[#737373] uppercase font-mono text-right">
             NITIN KUMAWAT // PORTFOLIO
           </div>
 
           {/* Right 404 Block */}
           <div className="my-auto py-12 flex flex-col items-center text-center">
             {/* Stamp Circle Badges */}
-            <div className="flex items-center gap-1.5 mb-3 text-[11px] text-[#787569]">
-              <span className="w-5 h-5 rounded-full border border-[#787569]/60 flex items-center justify-center font-bold">C</span>
-              <span className="w-5 h-5 rounded-full border border-[#787569]/60 flex items-center justify-center font-bold">H</span>
-              <span className="w-5 h-5 rounded-full border border-[#787569]/60 flex items-center justify-center font-bold">E</span>
+            <div className="flex items-center gap-1.5 mb-3 text-[11px] text-[#737373]">
+              <span className="w-5 h-5 rounded-full border border-[#737373]/60 flex items-center justify-center font-bold">C</span>
+              <span className="w-5 h-5 rounded-full border border-[#737373]/60 flex items-center justify-center font-bold">H</span>
+              <span className="w-5 h-5 rounded-full border border-[#737373]/60 flex items-center justify-center font-bold">E</span>
             </div>
 
             {/* Info Missing headline */}
-            <h2 className="text-xs lg:text-sm font-mono tracking-wider text-[#a09c8e] uppercase mb-1">
+            <h2 className="text-xs lg:text-sm font-mono tracking-wider text-[#a3a3a3] uppercase mb-1">
               INFO MISSING // PAGE NOT FOUND
             </h2>
 
@@ -250,13 +250,13 @@ export function NotFound({ path }: NotFoundProps) {
               >
                 404
               </span>
-              <span className="absolute top-4 -right-5 text-sm lg:text-base font-mono text-[#787569] border border-[#787569]/50 rounded-full w-5 h-5 flex items-center justify-center">
+              <span className="absolute top-4 -right-5 text-sm lg:text-base font-mono text-[#737373] border border-[#737373]/50 rounded-full w-5 h-5 flex items-center justify-center">
                 ®
               </span>
             </div>
 
             {/* Secondary subtitle */}
-            <p className="text-[10px] lg:text-[11px] text-[#787569] max-w-xs font-mono uppercase tracking-wide leading-relaxed mt-2">
+            <p className="text-[10px] lg:text-[11px] text-[#737373] max-w-xs font-mono uppercase tracking-wide leading-relaxed mt-2">
               THE RESOURCE MAY HAVE BEEN DEPRECATED OR REMOVED FROM THE BACKSTAGE.
             </p>
           </div>
@@ -264,7 +264,7 @@ export function NotFound({ path }: NotFoundProps) {
           {/* Bottom Chromatic Aberration Rainbow Slice */}
           <div className="overflow-hidden h-14 relative flex flex-col items-center opacity-85">
             <p 
-              className="text-[10px] font-mono tracking-wider text-[#dcd7cb] uppercase"
+              className="text-[10px] font-mono tracking-wider text-[#d4d4d4] uppercase"
               style={{
                 textShadow: '-2px 0 1px #00ffff, 2px 0 1px #ff0055, 0 1px 3px #ffee00',
               }}
