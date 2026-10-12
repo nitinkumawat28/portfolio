@@ -1,4 +1,4 @@
-import { ExternalLink, Award, CheckCircle2, Sparkles } from "lucide-react";
+import { ExternalLink, Award, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 type Certificate = {
@@ -78,40 +78,7 @@ export function AchievementsFolderView() {
         </p>
       </motion.div>
 
-      {/* Featured Competitive Exam Achievement Banner */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.98, y: 15 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.05 }}
-        whileHover={{ scale: 1.01 }}
-        className="relative overflow-hidden rounded-2xl border border-amber-500/30 bg-gradient-to-r from-amber-500/15 via-[#131720]/80 to-amber-500/10 p-5 sm:p-6 mb-8 backdrop-blur-xl shadow-[0_10px_35px_-10px_rgba(245,158,11,0.2)]"
-      >
-        <div className="pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full bg-amber-400/15 blur-2xl" />
-        <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-start gap-3.5">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-amber-400/30 bg-amber-400/20 text-amber-300 shadow-inner">
-              <Sparkles size={22} className="animate-spin" style={{ animationDuration: "12s" }} />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-400">
-                  National Competitive Achievement
-                </span>
-                <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              </div>
-              <h3 className="text-lg sm:text-xl font-bold text-white mt-0.5">
-                Admission to SVNIT Surat via JEE Main 2024
-              </h3>
-              <p className="text-xs sm:text-sm text-white/65 mt-1 leading-relaxed">
-                Qualified India&apos;s premier national engineering examination (JEE Main 2024) among over 1.4 million aspirants to secure admission to the National Institute of Technology (SVNIT Surat).
-              </p>
-            </div>
-          </div>
-          <span className="self-start sm:self-center shrink-0 rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 font-mono text-xs font-bold text-amber-300">
-            2024
-          </span>
-        </div>
-      </motion.div>
+
 
       {/* Grid of Verified Credentials */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
