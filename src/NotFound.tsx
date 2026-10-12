@@ -1,278 +1,289 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { ArrowLeft, Home } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { ArrowLeft } from 'lucide-react';
 
 interface NotFoundProps {
   path?: string;
 }
 
 export function NotFound({ path }: NotFoundProps) {
-  const currentPath = path || (typeof window !== 'undefined' ? window.location.pathname : '');
-  const containerRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [smoothPos, setSmoothPos] = useState({ x: 0, y: 0 });
+  const reqRef = useRef<number | null>(null);
 
-  // Mouse & physics tracking
-  const mouseRef = useRef({
-    targetX: 0,
-    targetY: 0,
-    currentX: 0,
-    currentY: 0,
-    isHovering: false,
-  });
-
-  const [hasInteracted, setHasInteracted] = useState(false);
-
-  // Smooth animation loop
+  // Smooth lerp follow
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    let currentX = 0;
+    let currentY = 0;
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    // Offscreen canvas for crisp text masking
-    const maskCanvas = document.createElement('canvas');
-    const maskCtx = maskCanvas.getContext('2d');
-    if (!maskCtx) return;
-
-    // Second offscreen layer for compositing illuminated rings
-    const ringCanvas = document.createElement('canvas');
-    const ringCtx = ringCanvas.getContext('2d');
-    if (!ringCtx) return;
-
-    let animationFrameId: number;
-    let width = 0;
-    let height = 0;
-    let dpr = 1;
-
-    const resize = () => {
-      if (!canvas || !containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      width = rect.width;
-      height = Math.max(rect.height, 460);
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-
-      canvas.width = Math.floor(width * dpr);
-      canvas.height = Math.floor(height * dpr);
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-
-      maskCanvas.width = canvas.width;
-      maskCanvas.height = canvas.height;
-
-      ringCanvas.width = canvas.width;
-      ringCanvas.height = canvas.height;
+    const loop = () => {
+      currentX += (mousePos.x - currentX) * 0.08;
+      currentY += (mousePos.y - currentY) * 0.08;
+      setSmoothPos({ x: currentX, y: currentY });
+      reqRef.current = requestAnimationFrame(loop);
     };
 
-    resize();
-    window.addEventListener('resize', resize);
-
-    let startTime = performance.now();
-
-    const render = (now: number) => {
-      const elapsed = (now - startTime) / 1000;
-      const mouse = mouseRef.current;
-
-      // Smooth lerp easing for fluid floating inertia
-      mouse.currentX += (mouse.targetX - mouse.currentX) * 0.07;
-      mouse.currentY += (mouse.targetY - mouse.currentY) * 0.07;
-
-      if (!width || !height) {
-        animationFrameId = requestAnimationFrame(render);
-        return;
-      }
-
-      // Base centers
-      const centerX = width / 2;
-      const centerY = height * 0.48;
-
-      // Parallax offsets: rings shift one way, 404 shifts slightly opposite for deep 3D illusion
-      const ringOriginX = centerX + mouse.currentX * 0.14;
-      const ringOriginY = centerY + mouse.currentY * 0.14;
-
-      const textOriginX = centerX - mouse.currentX * 0.08;
-      const textOriginY = centerY - mouse.currentY * 0.08;
-
-      // Responsive font sizing for 404
-      const fontSize = Math.min(Math.max(width * 0.32, 160), 340);
-
-      // --- 1. RENDER 404 MASK ON OFFSCREEN CANVAS ---
-      maskCtx.save();
-      maskCtx.clearRect(0, 0, maskCanvas.width, maskCanvas.height);
-      maskCtx.scale(dpr, dpr);
-      maskCtx.fillStyle = '#ffffff';
-      maskCtx.font = `900 ${fontSize}px "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
-      maskCtx.textAlign = 'center';
-      maskCtx.textBaseline = 'middle';
-      maskCtx.letterSpacing = '-0.04em';
-      maskCtx.fillText('404', textOriginX, textOriginY);
-      maskCtx.restore();
-
-      // --- 2. RENDER MAIN CANVAS (BACKGROUND RINGS) ---
-      ctx.save();
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.scale(dpr, dpr);
-
-      const ringSpacing = Math.max(width * 0.012, 10);
-      const maxRadius = Math.hypot(width, height) * 0.85;
-
-      // Faint ambient background rings
-      ctx.lineWidth = 1.1;
-      for (let r = ringSpacing; r < maxRadius; r += ringSpacing) {
-        // Subtle ambient wave ripple
-        const pulse = Math.sin(elapsed * 1.8 - r * 0.018) * 0.015;
-        const alpha = Math.max(0.02, 0.05 + pulse);
-
-        ctx.beginPath();
-        ctx.arc(ringOriginX, ringOriginY, r, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(255, 255, 255, ${alpha.toFixed(3)})`;
-        ctx.stroke();
-      }
-      ctx.restore();
-
-      // --- 3. RENDER HIGHLIGHTED RINGS ON OFFSCREEN CANVAS ---
-      ringCtx.save();
-      ringCtx.clearRect(0, 0, ringCanvas.width, ringCanvas.height);
-      ringCtx.scale(dpr, dpr);
-
-      // Cursor position in canvas coordinates
-      const cursorCanvasX = centerX + mouse.currentX;
-      const cursorCanvasY = centerY + mouse.currentY;
-
-      // Draw bright, sharp concentric rings
-      for (let r = ringSpacing; r < maxRadius; r += ringSpacing) {
-        // Distance from ring to cursor for interactive spotlight illumination
-        const distToCursor = Math.abs(Math.hypot(cursorCanvasX - ringOriginX, cursorCanvasY - ringOriginY) - r);
-        const proximityBoost = Math.max(0, 1 - distToCursor / 160) * 0.35;
-        const wave = Math.sin(elapsed * 2.2 - r * 0.02) * 0.08;
-        const brightness = Math.min(1, 0.72 + wave + proximityBoost);
-
-        ringCtx.lineWidth = 3.2;
-        ringCtx.lineCap = 'round';
-        ringCtx.beginPath();
-        ringCtx.arc(ringOriginX, ringOriginY, r, 0, Math.PI * 2);
-        ringCtx.strokeStyle = `rgba(240, 243, 250, ${brightness.toFixed(3)})`;
-        ringCtx.stroke();
-      }
-
-      // Clip bright rings precisely to the 404 silhouette
-      ringCtx.globalCompositeOperation = 'destination-in';
-      ringCtx.drawImage(maskCanvas, 0, 0, width, height);
-      ringCtx.globalCompositeOperation = 'source-over';
-      ringCtx.restore();
-
-      // --- 4. COMPOSITE HIGHLIGHTED 404 ON TOP ---
-      ctx.save();
-      ctx.drawImage(ringCanvas, 0, 0);
-
-      // Subtle soft glow around the active 404
-      ctx.globalCompositeOperation = 'screen';
-      ctx.filter = 'blur(12px)';
-      ctx.globalAlpha = 0.28;
-      ctx.drawImage(ringCanvas, 0, 0);
-      ctx.restore();
-
-      animationFrameId = requestAnimationFrame(render);
-    };
-
-    animationFrameId = requestAnimationFrame(render);
-
+    reqRef.current = requestAnimationFrame(loop);
     return () => {
-      cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('resize', resize);
+      if (reqRef.current) cancelAnimationFrame(reqRef.current);
     };
-  }, []);
+  }, [mousePos]);
 
-  // Mouse / Pointer Move listener
-  const handlePointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const { innerWidth, innerHeight } = window;
+    const x = (e.clientX - innerWidth / 2) / (innerWidth / 2);
+    const y = (e.clientY - innerHeight / 2) / (innerHeight / 2);
+    setMousePos({ x, y });
+  };
 
-    mouseRef.current.targetX = x;
-    mouseRef.current.targetY = y;
-    mouseRef.current.isHovering = true;
-    if (!hasInteracted) setHasInteracted(true);
-  }, [hasInteracted]);
+  // Parallax offsets
+  const leftColOffset = smoothPos.y * -18;
+  const rightColOffset = smoothPos.y * 14;
+  const centerColOffset = smoothPos.y * -6;
 
-  const handlePointerLeave = useCallback(() => {
-    mouseRef.current.targetX = 0;
-    mouseRef.current.targetY = 0;
-    mouseRef.current.isHovering = false;
-  }, []);
+  // Dynamic chromatic aberration based on mouse
+  const redShift = smoothPos.x * 4;
+  const cyanShift = -smoothPos.x * 4;
+  const rgbShadow = `${redShift.toFixed(1)}px 0px 2px rgba(255, 60, 60, 0.75), ${cyanShift.toFixed(1)}px 0px 2px rgba(0, 240, 255, 0.75)`;
+
+  const rulerNumbers = ['410', '420', '430', '440', '450', '460', '470', '480', '490', '500', '510', '520', '530', '540', '550'];
 
   return (
     <div
-      ref={containerRef}
-      onPointerMove={handlePointerMove}
-      onPointerLeave={handlePointerLeave}
-      className="relative min-h-screen w-full bg-[#050608] text-white flex flex-col justify-between selection:bg-white/20 select-none overflow-hidden"
+      onMouseMove={handleMouseMove}
+      className="relative min-h-screen w-full bg-[#12130e] text-[#b0aba0] font-mono selection:bg-[#f4eedb]/20 selection:text-[#f4eedb] overflow-hidden flex flex-col justify-between select-none"
     >
-      {/* Subtle radial ambient vignette */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(255,255,255,0.03)_0%,transparent_70%)]" />
+      {/* Subtle vintage film grain overlay */}
+      <div 
+        className="pointer-events-none fixed inset-0 opacity-[0.035] mix-blend-overlay z-50"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
+        }} 
+      />
 
-      {/* Top Header */}
-      <header className="relative z-20 flex items-center justify-between p-6 sm:p-8 max-w-5xl mx-auto w-full">
-        <button
-          onClick={() => (window.location.href = '/')}
-          className="flex items-center gap-2 text-xs sm:text-sm font-medium text-white/60 hover:text-white transition-colors cursor-pointer group"
+      {/* 3-Column Editorial Grid Layout */}
+      <div className="relative z-10 w-full flex-1 grid grid-cols-1 md:grid-cols-3 max-w-[1550px] mx-auto border-x border-[#2c2c24]/50">
+        
+        {/* ================= LEFT COLUMN ================= */}
+        <div 
+          className="hidden md:flex flex-col justify-between p-8 lg:p-12 border-r border-[#2c2c24]/50 relative transition-transform duration-75 ease-out will-change-transform"
+          style={{ transform: `translateY(${leftColOffset}px)` }}
         >
-          <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-          <span>Back to Desktop</span>
-        </button>
+          {/* Top Edge Text */}
+          <div className="opacity-40 text-[10px] tracking-widest text-[#787569] uppercase font-mono">
+            REMOVED FROM THE BACKSTAGE.
+          </div>
 
-        <div className="flex items-center gap-2 font-mono text-[11px] sm:text-xs text-white/40 tracking-wider uppercase">
-          <span className="w-1.5 h-1.5 rounded-full bg-white/40 animate-pulse" />
-          <span>STATUS: 404_NOT_FOUND</span>
-        </div>
-      </header>
-
-      {/* Center Interactive Canvas */}
-      <div className="relative flex-1 flex flex-col items-center justify-center w-full px-4">
-        {/* Canvas containing dynamic concentric rings & reactive 404 */}
-        <canvas
-          ref={canvasRef}
-          className="w-full max-w-4xl h-[340px] sm:h-[420px] md:h-[480px] cursor-crosshair touch-none"
-        />
-
-        {/* Clean, elegant subtext & action controls */}
-        <div className="relative z-20 flex flex-col items-center text-center mt-2 space-y-4 max-w-md px-4">
-          <p className="text-sm sm:text-base text-white/60 font-normal leading-relaxed">
-            Looks like this page doesn’t exist. The route may have moved or was never created.
-          </p>
-
-          {currentPath && (
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.04] border border-white/10 text-[11px] font-mono text-white/50">
-              <span>Path:</span>
-              <span className="text-white/80 font-semibold">{currentPath}</span>
+          {/* Left 404 Block */}
+          <div className="my-auto py-12 flex flex-col items-center text-center">
+            {/* Stamp Circle Badges */}
+            <div className="flex items-center gap-1.5 mb-3 text-[11px] text-[#787569]">
+              <span className="w-5 h-5 rounded-full border border-[#787569]/60 flex items-center justify-center font-bold">C</span>
+              <span className="w-5 h-5 rounded-full border border-[#787569]/60 flex items-center justify-center font-bold">H</span>
+              <span className="w-5 h-5 rounded-full border border-[#787569]/60 flex items-center justify-center font-bold">E</span>
             </div>
-          )}
 
-          {/* Action Buttons */}
-          <div className="flex items-center justify-center gap-3 pt-2">
-            <a
-              href="/"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-black font-semibold text-xs sm:text-sm hover:bg-neutral-200 transition-all hover:scale-105 active:scale-95 shadow-lg"
-            >
-              <Home size={15} />
-              <span>Go to Desktop</span>
-            </a>
+            {/* Info Missing headline */}
+            <h2 className="text-xs lg:text-sm font-mono tracking-wider text-[#a09c8e] uppercase mb-1">
+              INFO MISSING // PAGE NOT FOUND
+            </h2>
 
-            <button
-              onClick={() => window.history.back()}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/5 text-white/80 hover:text-white font-medium text-xs sm:text-sm hover:bg-white/10 border border-white/10 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+            {/* Huge Serif 404 with Registered Symbol */}
+            <div className="relative inline-block my-2">
+              <span 
+                className="text-[7.5rem] lg:text-[10rem] xl:text-[11.5rem] leading-none font-['DM_Serif_Display',serif] text-[#f4eedb] tracking-tighter"
+                style={{ textShadow: rgbShadow }}
+              >
+                404
+              </span>
+              <span className="absolute top-4 -right-5 text-sm lg:text-base font-mono text-[#787569] border border-[#787569]/50 rounded-full w-5 h-5 flex items-center justify-center">
+                ®
+              </span>
+            </div>
+
+            {/* Secondary subtitle */}
+            <p className="text-[10px] lg:text-[11px] text-[#787569] max-w-xs font-mono uppercase tracking-wide leading-relaxed mt-2">
+              THE RESOURCE MAY HAVE BEEN DEPRECATED OR REMOVED FROM THE BACKSTAGE.
+            </p>
+          </div>
+
+          {/* Bottom Cut Glitch Repeat Block */}
+          <div className="opacity-75 blur-[0.6px] translate-y-4">
+            <div className="flex items-center justify-center gap-1.5 mb-1 text-[9px] text-[#787569]">
+              <span className="w-4 h-4 rounded-full border border-[#787569]/40 flex items-center justify-center">C</span>
+              <span className="w-4 h-4 rounded-full border border-[#787569]/40 flex items-center justify-center">H</span>
+              <span className="w-4 h-4 rounded-full border border-[#787569]/40 flex items-center justify-center">E</span>
+            </div>
+            <p 
+              className="text-[10px] font-mono tracking-wider text-[#c0bbb0] text-center uppercase"
+              style={{
+                textShadow: '-2px 0 1px #00ffff, 2px 0 1px #ff0055, 0 1px 2px #ffee00',
+              }}
             >
-              <ArrowLeft size={15} />
-              <span>Go Back</span>
-            </button>
+              INFO MISSING // PAGE NOT FOUND
+            </p>
           </div>
         </div>
-      </div>
 
-      {/* Footer */}
-      <footer className="relative z-20 p-6 sm:p-8 text-center text-[11px] sm:text-xs text-white/30 font-mono">
-        Nitin Kumawat · Portfolio OS · All rights reserved
-      </footer>
+        {/* ================= CENTER COLUMN (MAIN ACTION) ================= */}
+        <div 
+          className="relative flex flex-col justify-between py-10 px-6 sm:px-10 border-r border-[#2c2c24]/50 overflow-hidden transition-transform duration-75 ease-out will-change-transform"
+          style={{ transform: `translateY(${centerColOffset}px)` }}
+        >
+          {/* Vertical Ruler Hash Ticks on left boundary */}
+          <div className="absolute left-1 top-0 bottom-0 flex flex-col justify-between py-6 text-[8px] text-[#4d4c3f] font-mono select-none pointer-events-none hidden sm:flex">
+            {rulerNumbers.map((num, i) => (
+              <span key={`l-${i}`} className="tracking-tighter">- {num}</span>
+            ))}
+          </div>
+
+          {/* Vertical Ruler Hash Ticks on right boundary */}
+          <div className="absolute right-1 top-0 bottom-0 flex flex-col justify-between py-6 text-[8px] text-[#4d4c3f] font-mono select-none pointer-events-none hidden sm:flex">
+            {rulerNumbers.map((num, i) => (
+              <span key={`r-${i}`} className="tracking-tighter">{num} -</span>
+            ))}
+          </div>
+
+          {/* Top text: YOU CAN ENJOY HERE */}
+          <div className="text-center pt-2">
+            <span className="text-[10px] sm:text-[11px] font-mono tracking-[0.25em] text-[#787569] uppercase">
+              YOU CAN ENJOY HERE
+            </span>
+          </div>
+
+          {/* Center Main Feature: "Take Me Back Home" Button & Mobile 404 */}
+          <div className="my-auto py-12 flex flex-col items-center justify-center text-center space-y-8">
+            
+            {/* Mobile View 404 Headline */}
+            <div className="md:hidden flex flex-col items-center text-center mb-4">
+              <div className="flex items-center gap-1.5 mb-2 text-[10px] text-[#787569]">
+                <span className="w-5 h-5 rounded-full border border-[#787569]/60 flex items-center justify-center">C</span>
+                <span className="w-5 h-5 rounded-full border border-[#787569]/60 flex items-center justify-center">H</span>
+                <span className="w-5 h-5 rounded-full border border-[#787569]/60 flex items-center justify-center">E</span>
+              </div>
+              <h2 className="text-xs font-mono tracking-wider text-[#a09c8e] uppercase">
+                INFO MISSING // PAGE NOT FOUND
+              </h2>
+              <div className="relative inline-block my-1">
+                <span 
+                  className="text-[6.5rem] leading-none font-['DM_Serif_Display',serif] text-[#f4eedb] tracking-tighter"
+                  style={{ textShadow: rgbShadow }}
+                >
+                  404
+                </span>
+                <span className="absolute top-2 -right-4 text-xs font-mono text-[#787569] border border-[#787569]/50 rounded-full w-4 h-4 flex items-center justify-center">
+                  ®
+                </span>
+              </div>
+              <p className="text-[10px] text-[#787569] max-w-xs font-mono uppercase tracking-wide">
+                THE RESOURCE MAY HAVE BEEN DEPRECATED OR REMOVED FROM THE BACKSTAGE.
+              </p>
+            </div>
+
+            {/* The Signature "Take Me Back Home" Serif Button */}
+            <a
+              href="/"
+              className="group relative inline-block text-center cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 px-6 py-4"
+            >
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.2rem] font-['DM_Serif_Display',serif] text-[#f4eedb] tracking-tight group-hover:text-white transition-colors">
+                <span className="italic font-normal">Take </span>
+                <span className="italic font-normal">Me </span>
+                <span className="italic font-normal">Back </span>
+                <span className="not-italic font-normal">Home</span>
+              </h1>
+              {/* Subtle underline on hover */}
+              <div className="h-[1px] w-0 group-hover:w-full bg-[#f4eedb]/60 transition-all duration-300 mx-auto mt-2" />
+            </a>
+
+            {/* Back button option */}
+            <button
+              onClick={() => window.history.back()}
+              className="inline-flex items-center gap-2 text-xs font-mono text-[#787569] hover:text-[#f4eedb] transition-colors cursor-pointer pt-2 group"
+            >
+              <ArrowLeft size={13} className="group-hover:-translate-x-1 transition-transform" />
+              <span>Or return to previous page</span>
+            </button>
+
+            {path && (
+              <div className="text-[10px] font-mono text-[#5c594f] tracking-wider">
+                REQUESTED_URI: {path}
+              </div>
+            )}
+          </div>
+
+          {/* Bottom text: ONLY DOPE STUFF */}
+          <div className="text-center pb-2">
+            <span className="text-[10px] sm:text-[11px] font-mono tracking-[0.25em] text-[#787569] uppercase">
+              ONLY DOPE STUFF
+            </span>
+          </div>
+        </div>
+
+        {/* ================= RIGHT COLUMN ================= */}
+        <div 
+          className="hidden md:flex flex-col justify-between p-8 lg:p-12 relative transition-transform duration-75 ease-out will-change-transform"
+          style={{ transform: `translateY(${rightColOffset}px)` }}
+        >
+          {/* Top Edge */}
+          <div className="opacity-40 text-[10px] tracking-widest text-[#787569] uppercase font-mono text-right">
+            NITIN KUMAWAT // PORTFOLIO
+          </div>
+
+          {/* Right 404 Block */}
+          <div className="my-auto py-12 flex flex-col items-center text-center">
+            {/* Stamp Circle Badges */}
+            <div className="flex items-center gap-1.5 mb-3 text-[11px] text-[#787569]">
+              <span className="w-5 h-5 rounded-full border border-[#787569]/60 flex items-center justify-center font-bold">C</span>
+              <span className="w-5 h-5 rounded-full border border-[#787569]/60 flex items-center justify-center font-bold">H</span>
+              <span className="w-5 h-5 rounded-full border border-[#787569]/60 flex items-center justify-center font-bold">E</span>
+            </div>
+
+            {/* Info Missing headline */}
+            <h2 className="text-xs lg:text-sm font-mono tracking-wider text-[#a09c8e] uppercase mb-1">
+              INFO MISSING // PAGE NOT FOUND
+            </h2>
+
+            {/* Huge Serif 404 with Registered Symbol */}
+            <div className="relative inline-block my-2">
+              <span 
+                className="text-[7.5rem] lg:text-[10rem] xl:text-[11.5rem] leading-none font-['DM_Serif_Display',serif] text-[#f4eedb] tracking-tighter"
+                style={{ textShadow: rgbShadow }}
+              >
+                404
+              </span>
+              <span className="absolute top-4 -right-5 text-sm lg:text-base font-mono text-[#787569] border border-[#787569]/50 rounded-full w-5 h-5 flex items-center justify-center">
+                ®
+              </span>
+            </div>
+
+            {/* Secondary subtitle */}
+            <p className="text-[10px] lg:text-[11px] text-[#787569] max-w-xs font-mono uppercase tracking-wide leading-relaxed mt-2">
+              THE RESOURCE MAY HAVE BEEN DEPRECATED OR REMOVED FROM THE BACKSTAGE.
+            </p>
+          </div>
+
+          {/* Bottom Chromatic Aberration Rainbow Slice */}
+          <div className="overflow-hidden h-14 relative flex flex-col items-center opacity-85">
+            <p 
+              className="text-[10px] font-mono tracking-wider text-[#dcd7cb] uppercase"
+              style={{
+                textShadow: '-2px 0 1px #00ffff, 2px 0 1px #ff0055, 0 1px 3px #ffee00',
+              }}
+            >
+              INFO MISSING // PAGE NOT FOUND
+            </p>
+            <div 
+              className="text-[4rem] leading-none font-['DM_Serif_Display',serif] text-[#f4eedb] -mt-1 font-bold tracking-tighter select-none"
+              style={{
+                textShadow: '-3px 0 2px #00f0ff, 3px 0 2px #ff0055, 0 2px 4px #ffe600',
+                filter: 'blur(0.5px)',
+              }}
+            >
+              404
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 }
