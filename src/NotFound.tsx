@@ -10,7 +10,7 @@ export function NotFound({ path }: NotFoundProps) {
   const [smoothPos, setSmoothPos] = useState({ x: 0, y: 0 });
   const reqRef = useRef<number | null>(null);
 
-  // Smooth lerp follow
+  // Smooth lerp follow for mouse
   useEffect(() => {
     let currentX = 0;
     let currentY = 0;
@@ -35,15 +35,15 @@ export function NotFound({ path }: NotFoundProps) {
     setMousePos({ x, y });
   };
 
-  // Parallax offsets
-  const leftColOffset = smoothPos.y * -18;
-  const rightColOffset = smoothPos.y * 14;
+  // Parallax offsets (Left moves upward on cursor move, Right moves opposite downward)
+  const leftColOffset = smoothPos.y * -28;
+  const rightColOffset = smoothPos.y * 28;
   const centerColOffset = smoothPos.y * -6;
 
   // Dynamic chromatic aberration based on mouse
-  const redShift = smoothPos.x * 4;
-  const cyanShift = -smoothPos.x * 4;
-  const rgbShadow = `${redShift.toFixed(1)}px 0px 2px rgba(255, 60, 60, 0.75), ${cyanShift.toFixed(1)}px 0px 2px rgba(0, 240, 255, 0.75)`;
+  const redShift = smoothPos.x * 5 + 1.5;
+  const cyanShift = -smoothPos.x * 5 - 1.5;
+  const rgbShadow = `${redShift.toFixed(1)}px 0px 3px rgba(255, 50, 50, 0.8), ${cyanShift.toFixed(1)}px 0px 3px rgba(0, 240, 255, 0.8)`;
 
   const rulerNumbers = ['410', '420', '430', '440', '450', '460', '470', '480', '490', '500', '510', '520', '530', '540', '550'];
 
@@ -52,6 +52,46 @@ export function NotFound({ path }: NotFoundProps) {
       onMouseMove={handleMouseMove}
       className="relative min-h-screen w-full bg-[var(--color-brand-bg)] text-[#a3a3a3] font-mono selection:bg-white/20 selection:text-white overflow-hidden flex flex-col justify-between select-none"
     >
+      {/* Embedded CSS for smooth opposing vertical motion and error blur */}
+      <style>{`
+        @keyframes error-drift-up {
+          0% {
+            transform: translateY(16px);
+            filter: blur(0.8px);
+          }
+          50% {
+            transform: translateY(-28px);
+            filter: blur(1.8px);
+          }
+          100% {
+            transform: translateY(16px);
+            filter: blur(0.8px);
+          }
+        }
+        @keyframes error-drift-down {
+          0% {
+            transform: translateY(-16px);
+            filter: blur(0.8px);
+          }
+          50% {
+            transform: translateY(28px);
+            filter: blur(1.8px);
+          }
+          100% {
+            transform: translateY(-16px);
+            filter: blur(0.8px);
+          }
+        }
+        .animate-drift-up {
+          animation: error-drift-up 6s ease-in-out infinite;
+          will-change: transform, filter;
+        }
+        .animate-drift-down {
+          animation: error-drift-down 6s ease-in-out infinite;
+          will-change: transform, filter;
+        }
+      `}</style>
+
       {/* Subtle vintage film grain overlay */}
       <div 
         className="pointer-events-none fixed inset-0 opacity-[0.03] mix-blend-overlay z-50"
@@ -63,9 +103,9 @@ export function NotFound({ path }: NotFoundProps) {
       {/* 3-Column Editorial Grid Layout */}
       <div className="relative z-10 w-full flex-1 grid grid-cols-1 md:grid-cols-3 max-w-[1550px] mx-auto border-x border-white/10">
         
-        {/* ================= LEFT COLUMN ================= */}
+        {/* ================= LEFT COLUMN (MOVING UPWARD WITH ERROR BLUR) ================= */}
         <div 
-          className="hidden md:flex flex-col justify-between p-8 lg:p-12 border-r border-white/10 relative transition-transform duration-75 ease-out will-change-transform"
+          className="hidden md:flex flex-col justify-between p-8 lg:p-12 border-r border-white/10 relative transition-transform duration-100 ease-out will-change-transform"
           style={{ transform: `translateY(${leftColOffset}px)` }}
         >
           {/* Top Edge Text */}
@@ -73,8 +113,8 @@ export function NotFound({ path }: NotFoundProps) {
             REMOVED FROM THE BACKSTAGE.
           </div>
 
-          {/* Left 404 Block */}
-          <div className="my-auto py-12 flex flex-col items-center text-center">
+          {/* Left 404 Block with opposing upward motion & error blur */}
+          <div className="my-auto py-12 flex flex-col items-center text-center animate-drift-up">
             {/* Stamp Circle Badges */}
             <div className="flex items-center gap-1.5 mb-3 text-[11px] text-[#737373]">
               <span className="w-5 h-5 rounded-full border border-[#737373]/60 flex items-center justify-center font-bold">C</span>
@@ -87,11 +127,14 @@ export function NotFound({ path }: NotFoundProps) {
               INFO MISSING // PAGE NOT FOUND
             </h2>
 
-            {/* Huge Serif 404 with Registered Symbol */}
+            {/* Huge Serif 404 with Registered Symbol & Error Blur/RGB Glitch */}
             <div className="relative inline-block my-2">
               <span 
                 className="text-[7.5rem] lg:text-[10rem] xl:text-[11.5rem] leading-none font-['DM_Serif_Display',serif] text-[#f4eedb] tracking-tighter"
-                style={{ textShadow: rgbShadow }}
+                style={{ 
+                  textShadow: rgbShadow,
+                  filter: 'blur(1px)',
+                }}
               >
                 404
               </span>
@@ -107,7 +150,7 @@ export function NotFound({ path }: NotFoundProps) {
           </div>
 
           {/* Bottom Cut Glitch Repeat Block */}
-          <div className="opacity-75 blur-[0.6px] translate-y-4">
+          <div className="opacity-75 translate-y-4" style={{ filter: 'blur(1.2px)' }}>
             <div className="flex items-center justify-center gap-1.5 mb-1 text-[9px] text-[#737373]">
               <span className="w-4 h-4 rounded-full border border-[#737373]/40 flex items-center justify-center">C</span>
               <span className="w-4 h-4 rounded-full border border-[#737373]/40 flex items-center justify-center">H</span>
@@ -124,9 +167,9 @@ export function NotFound({ path }: NotFoundProps) {
           </div>
         </div>
 
-        {/* ================= CENTER COLUMN (MAIN ACTION) ================= */}
+        {/* ================= CENTER COLUMN (CLEAR & INTERACTIVE) ================= */}
         <div 
-          className="relative flex flex-col justify-between py-10 px-6 sm:px-10 border-r border-white/10 overflow-hidden transition-transform duration-75 ease-out will-change-transform"
+          className="relative flex flex-col justify-between py-10 px-6 sm:px-10 border-r border-white/10 overflow-hidden transition-transform duration-100 ease-out will-change-transform"
           style={{ transform: `translateY(${centerColOffset}px)` }}
         >
           {/* Vertical Ruler Hash Ticks on left boundary */}
@@ -153,8 +196,8 @@ export function NotFound({ path }: NotFoundProps) {
           {/* Center Main Feature: "Take Me Back Home" Button & Mobile 404 */}
           <div className="my-auto py-12 flex flex-col items-center justify-center text-center space-y-8">
             
-            {/* Mobile View 404 Headline */}
-            <div className="md:hidden flex flex-col items-center text-center mb-4">
+            {/* Mobile View 404 Headline with subtle error blur */}
+            <div className="md:hidden flex flex-col items-center text-center mb-4 animate-drift-up">
               <div className="flex items-center gap-1.5 mb-2 text-[10px] text-[#737373]">
                 <span className="w-5 h-5 rounded-full border border-[#737373]/60 flex items-center justify-center">C</span>
                 <span className="w-5 h-5 rounded-full border border-[#737373]/60 flex items-center justify-center">H</span>
@@ -166,7 +209,10 @@ export function NotFound({ path }: NotFoundProps) {
               <div className="relative inline-block my-1">
                 <span 
                   className="text-[6.5rem] leading-none font-['DM_Serif_Display',serif] text-[#f4eedb] tracking-tighter"
-                  style={{ textShadow: rgbShadow }}
+                  style={{ 
+                    textShadow: rgbShadow,
+                    filter: 'blur(1px)',
+                  }}
                 >
                   404
                 </span>
@@ -179,7 +225,7 @@ export function NotFound({ path }: NotFoundProps) {
               </p>
             </div>
 
-            {/* The Signature "Take Me Back Home" Serif Button */}
+            {/* The Signature "Take Me Back Home" Serif Button (Sharp & Clear) */}
             <a
               href="/"
               className="group relative inline-block text-center cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 px-6 py-4"
@@ -218,9 +264,9 @@ export function NotFound({ path }: NotFoundProps) {
           </div>
         </div>
 
-        {/* ================= RIGHT COLUMN ================= */}
+        {/* ================= RIGHT COLUMN (MOVING OPPOSITE DOWNWARD WITH ERROR BLUR) ================= */}
         <div 
-          className="hidden md:flex flex-col justify-between p-8 lg:p-12 relative transition-transform duration-75 ease-out will-change-transform"
+          className="hidden md:flex flex-col justify-between p-8 lg:p-12 relative transition-transform duration-100 ease-out will-change-transform"
           style={{ transform: `translateY(${rightColOffset}px)` }}
         >
           {/* Top Edge */}
@@ -228,8 +274,8 @@ export function NotFound({ path }: NotFoundProps) {
             NITIN KUMAWAT // PORTFOLIO
           </div>
 
-          {/* Right 404 Block */}
-          <div className="my-auto py-12 flex flex-col items-center text-center">
+          {/* Right 404 Block with opposing downward motion & error blur */}
+          <div className="my-auto py-12 flex flex-col items-center text-center animate-drift-down">
             {/* Stamp Circle Badges */}
             <div className="flex items-center gap-1.5 mb-3 text-[11px] text-[#737373]">
               <span className="w-5 h-5 rounded-full border border-[#737373]/60 flex items-center justify-center font-bold">C</span>
@@ -242,11 +288,14 @@ export function NotFound({ path }: NotFoundProps) {
               INFO MISSING // PAGE NOT FOUND
             </h2>
 
-            {/* Huge Serif 404 with Registered Symbol */}
+            {/* Huge Serif 404 with Registered Symbol & Error Blur/RGB Glitch */}
             <div className="relative inline-block my-2">
               <span 
                 className="text-[7.5rem] lg:text-[10rem] xl:text-[11.5rem] leading-none font-['DM_Serif_Display',serif] text-[#f4eedb] tracking-tighter"
-                style={{ textShadow: rgbShadow }}
+                style={{ 
+                  textShadow: rgbShadow,
+                  filter: 'blur(1px)',
+                }}
               >
                 404
               </span>
@@ -262,7 +311,7 @@ export function NotFound({ path }: NotFoundProps) {
           </div>
 
           {/* Bottom Chromatic Aberration Rainbow Slice */}
-          <div className="overflow-hidden h-14 relative flex flex-col items-center opacity-85">
+          <div className="overflow-hidden h-14 relative flex flex-col items-center opacity-85" style={{ filter: 'blur(1.2px)' }}>
             <p 
               className="text-[10px] font-mono tracking-wider text-[#d4d4d4] uppercase"
               style={{
@@ -275,7 +324,6 @@ export function NotFound({ path }: NotFoundProps) {
               className="text-[4rem] leading-none font-['DM_Serif_Display',serif] text-[#f4eedb] -mt-1 font-bold tracking-tighter select-none"
               style={{
                 textShadow: '-3px 0 2px #00f0ff, 3px 0 2px #ff0055, 0 2px 4px #ffe600',
-                filter: 'blur(0.5px)',
               }}
             >
               404
