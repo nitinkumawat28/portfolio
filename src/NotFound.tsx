@@ -1,4 +1,4 @@
-import { ArrowLeft, Home, FolderKanban, GitBranch, Wrench, Award, User, AlertOctagon } from 'lucide-react';
+import { ArrowLeft, Home, AlertOctagon } from 'lucide-react';
 
 interface NotFoundProps {
   path?: string;
@@ -6,14 +6,6 @@ interface NotFoundProps {
 
 export function NotFound({ path }: NotFoundProps) {
   const currentPath = path || (typeof window !== 'undefined' ? window.location.pathname : '');
-
-  const quickLinks = [
-    { label: 'Projects', href: '/folder/projects', icon: FolderKanban, color: 'text-pink-400 border-pink-500/20 bg-pink-500/10' },
-    { label: 'Git Repositories', href: '/folder/repositories', icon: GitBranch, color: 'text-emerald-400 border-emerald-500/20 bg-emerald-500/10' },
-    { label: 'Skills', href: '/folder/skills', icon: Wrench, color: 'text-cyan-400 border-cyan-500/20 bg-cyan-500/10' },
-    { label: 'Achievements', href: '/folder/achievements', icon: Award, color: 'text-amber-400 border-amber-500/20 bg-amber-500/10' },
-    { label: 'About Nitin', href: '/about', icon: User, color: 'text-purple-400 border-purple-500/20 bg-purple-500/10' },
-  ];
 
   return (
     <div className="relative min-h-screen w-full bg-[#07090d] text-white flex flex-col justify-between p-6 sm:p-12 font-sans selection:bg-white/20 overflow-x-hidden">
@@ -83,27 +75,7 @@ export function NotFound({ path }: NotFoundProps) {
           </button>
         </div>
 
-        {/* Quick Directory Exploration */}
-        <div className="pt-10 border-t border-white/10 space-y-4">
-          <p className="text-xs uppercase font-mono tracking-wider text-white/40">
-            Or jump directly to a known section
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-2.5">
-            {quickLinks.map((link) => {
-              const Icon = link.icon;
-              return (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-semibold transition-all hover:scale-105 ${link.color}`}
-                >
-                  <Icon size={14} />
-                  <span>{link.label}</span>
-                </a>
-              );
-            })}
-          </div>
-        </div>
+
       </main>
 
       {/* Footer */}
