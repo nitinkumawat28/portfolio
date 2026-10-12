@@ -77,8 +77,20 @@ export function ChatBar({ onOpenFolder }: ChatBarProps = {}) {
                 </a>
               </div>
               <div className="self-start bg-[#1e2028] text-white px-4 py-2 rounded-2xl rounded-tl-sm max-w-[85%] leading-relaxed border border-white/5">
-                If you're asking about projects, here are my top 3:
+                If you're asking about projects, here are my featured projects:
                 <div className="mt-2 flex flex-col gap-1">
+                  <a 
+                    href="/folder/portfolio" 
+                    onClick={(e) => {
+                      if (onOpenFolder) {
+                        e.preventDefault();
+                        onOpenFolder('portfolio');
+                      }
+                    }}
+                    className="text-blue-400 hover:underline text-xs"
+                  >
+                    1. Interactive Desktop OS Portfolio
+                  </a>
                   <a 
                     href="/folder/ar-restaurant-pos" 
                     onClick={(e) => {
@@ -89,7 +101,7 @@ export function ChatBar({ onOpenFolder }: ChatBarProps = {}) {
                     }}
                     className="text-blue-400 hover:underline text-xs"
                   >
-                    1. 3D AR Restaurant POS
+                    2. 3D AR Restaurant POS
                   </a>
                   <a 
                     href="/folder/healthsaral" 
@@ -101,7 +113,7 @@ export function ChatBar({ onOpenFolder }: ChatBarProps = {}) {
                     }}
                     className="text-blue-400 hover:underline text-xs"
                   >
-                    2. HealthSaral AI Analyzer
+                    3. HealthSaral AI Analyzer
                   </a>
                   <a 
                     href="/folder/hrms" 
@@ -113,7 +125,7 @@ export function ChatBar({ onOpenFolder }: ChatBarProps = {}) {
                     }}
                     className="text-blue-400 hover:underline text-xs"
                   >
-                    3. AI-Powered HRMS
+                    4. AI-Powered HRMS
                   </a>
                 </div>
               </div>

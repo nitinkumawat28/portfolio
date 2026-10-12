@@ -24,7 +24,8 @@ export function FolderOverlay({
   const isCaseStudySlug =
     folderId === "ar-restaurant-pos" ||
     folderId === "healthsaral" ||
-    folderId === "hrms";
+    folderId === "hrms" ||
+    folderId === "portfolio";
 
   const getInitialSlug = () =>
     initialCaseStudySlug || (isCaseStudySlug ? folderId : null);

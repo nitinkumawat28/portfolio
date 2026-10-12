@@ -44,7 +44,7 @@ export function FolderContent({ folderId }: Props) {
   // Backwards compatibility alias for experience -> repositories
   contentMap.experience = contentMap.repositories;
 
-  if (folderId === 'ar-restaurant-pos' || folderId === 'healthsaral' || folderId === 'hrms') {
+  if (folderId === 'ar-restaurant-pos' || folderId === 'healthsaral' || folderId === 'hrms' || folderId === 'portfolio') {
     return (
       <div className="min-h-screen bg-[#0d0d0d] text-white p-6 md:p-12 lg:p-20 font-sans overflow-y-auto">
         <div className="max-w-4xl mx-auto">

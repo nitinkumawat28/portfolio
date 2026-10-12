@@ -26,7 +26,7 @@ export function ProjectsFolderView({ onOpenCaseStudy }: Props) {
   );
 
   return (
-    <section className="grid min-h-full place-items-center px-4 py-16">
+    <section className="flex flex-col items-center justify-start min-h-full px-2 sm:px-4 pt-2 sm:pt-4 md:pt-10 pb-16">
       <ProjectDeck items={items} label="Projects" />
     </section>
   );

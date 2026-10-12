@@ -21,7 +21,7 @@ function GithubIcon({ size = 14 }: { size?: number }) {
   );
 }
 
-export type CaseStudySlug = "ar-restaurant-pos" | "healthsaral" | "hrms";
+export type CaseStudySlug = "ar-restaurant-pos" | "healthsaral" | "hrms" | "portfolio";
 
 type CaseStudyData = {
   id: CaseStudySlug;
@@ -33,8 +33,8 @@ type CaseStudyData = {
   tech: string[];
   overview: string;
   stats: { value: string | number; label: string }[];
-  problem: string;
-  solution: string;
+  problem?: string;
+  solution?: string;
   highlights: string[];
   links: { label: string; href: string; icon?: "github" | "external" }[];
 };
@@ -66,7 +66,6 @@ const CASE_STUDIES: Record<CaseStudySlug, CaseStudyData> = {
       "Pitched the solution to 50+ cafes and restaurants, conducting client outreach, gathering market feedback, and validating real-world business requirements.",
     ],
     links: [
-      { label: "Live Demo", href: "https://tablemate-pos.vercel.app", icon: "external" },
       { label: "GitHub Repo", href: "https://github.com/nitinkumawat28/tablemate-pos", icon: "github" },
     ],
   },
@@ -126,6 +125,33 @@ const CASE_STUDIES: Record<CaseStudySlug, CaseStudyData> = {
     ],
     links: [
       { label: "GitHub Repo", href: "https://github.com/nitinkumawat28/HRMS", icon: "github" },
+    ],
+  },
+  portfolio: {
+    id: "portfolio",
+    title: "Portfolio Project",
+    subtitle: "Web Operating System Experience with Draggable Windows & 3D Shaders",
+    period: "2026",
+    role: "Creative & Full-Stack Developer",
+    accent: "#a855f7",
+    tech: ["React 19", "TypeScript", "Tailwind CSS v4", "WebGL / OGL", "Framer Motion", "Vite"],
+    overview:
+      "A personal portfolio engineered as an interactive desktop environment. Features interactive draggable windows, custom WebGL mathematical background shaders, live GitHub API repository synchronization, real-time IST clock, and immersive case study presentations.",
+    stats: [
+      { value: "React 19", label: "Component Engine" },
+      { value: "60 FPS", label: "WebGL Shader Performance" },
+      { value: "Zero Delay", label: "Instant GitHub Cache" },
+    ],
+    highlights: [
+      "Engineered an interactive desktop OS experience featuring draggable windows, custom icon positioning, persistent local state, and smooth folder animations.",
+      "Implemented a customized WebGL shader background using OGL for fluid, mathematical ambient animations running at a locked 60 FPS.",
+      "Integrated real-time GitHub REST API fetching with intelligent client-side caching and pre-warmed instant rendering.",
+      "Designed an interactive skills showcase with categorized technology stacks and project-based live filter highlighting.",
+      "Optimized bundle size and asset loading via modern Vite bundling, responsive asset loading, and Tailwind CSS v4 performance enhancements.",
+    ],
+    links: [
+      { label: "Live Website", href: "https://nitinkumawat.me/", icon: "external" },
+      { label: "GitHub Repo", href: "https://github.com/nitinkumawat28/portfolio", icon: "github" },
     ],
   },
 };
@@ -231,16 +257,18 @@ export function CaseStudyView({ slug, onBack }: Props) {
         </div>
 
         {/* Problem & Solution */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="rounded-2xl border border-white/10 bg-[#14181f]/80 p-6 backdrop-blur-sm">
-            <h4 className="text-sm font-bold uppercase tracking-wider text-rose-400 mb-2">The Challenge</h4>
-            <p className="text-sm leading-relaxed text-white/70">{data.problem}</p>
+        {data.problem && data.solution && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="rounded-2xl border border-white/10 bg-[#14181f]/80 p-6 backdrop-blur-sm">
+              <h4 className="text-sm font-bold uppercase tracking-wider text-rose-400 mb-2">The Challenge</h4>
+              <p className="text-sm leading-relaxed text-white/70">{data.problem}</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-[#14181f]/80 p-6 backdrop-blur-sm">
+              <h4 className="text-sm font-bold uppercase tracking-wider text-emerald-400 mb-2">The Solution</h4>
+              <p className="text-sm leading-relaxed text-white/70">{data.solution}</p>
+            </div>
           </div>
-          <div className="rounded-2xl border border-white/10 bg-[#14181f]/80 p-6 backdrop-blur-sm">
-            <h4 className="text-sm font-bold uppercase tracking-wider text-emerald-400 mb-2">The Solution</h4>
-            <p className="text-sm leading-relaxed text-white/70">{data.solution}</p>
-          </div>
-        </div>
+        )}
 
         {/* Key Deliverables & Highlights */}
         <div className="rounded-2xl border border-white/10 bg-[#14181f]/80 p-6 md:p-8 backdrop-blur-sm">

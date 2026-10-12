@@ -17,15 +17,17 @@ type SkillCategory = {
 
 const SKILL_CATEGORIES: SkillCategory[] = [
   {
-    title: "Languages",
+    title: "Languages & Frameworks",
     skills: [
-      { name: "C++", category: "Languages", projects: [] },
+      { name: "TypeScript", category: "Languages", projects: ["portfolio"] },
+      { name: "React.js", category: "Languages", projects: ["pos", "hrms", "portfolio"] },
+      { name: "JavaScript", category: "Languages", projects: ["pos", "hrms", "portfolio"] },
+      { name: "Tailwind CSS", category: "Languages", projects: ["pos", "healthsaral", "hrms", "portfolio"] },
+      { name: "HTML5", category: "Languages", projects: ["pos", "healthsaral", "hrms", "portfolio"] },
+      { name: "CSS3", category: "Languages", projects: ["pos", "healthsaral", "hrms", "portfolio"] },
       { name: "Python", category: "Languages", projects: ["hrms"] },
+      { name: "C++", category: "Languages", projects: [] },
       { name: "C", category: "Languages", projects: [] },
-      { name: "HTML5", category: "Languages", projects: ["pos", "healthsaral", "hrms"] },
-      { name: "JavaScript", category: "Languages", projects: ["pos", "hrms"] },
-      { name: "CSS3", category: "Languages", projects: ["pos", "healthsaral", "hrms"] },
-      { name: "Tailwind CSS", category: "Languages", projects: ["pos", "healthsaral", "hrms"] },
     ],
   },
   {
@@ -66,23 +68,28 @@ const SKILL_CATEGORIES: SkillCategory[] = [
     ],
   },
   {
-    title: "Tools",
+    title: "Tools & Libraries",
     skills: [
+      { name: "Blender", category: "Tools", projects: ["pos"] },
+      { name: "Vite", category: "Tools", projects: ["portfolio"] },
+      { name: "WebGL", category: "Tools", projects: ["portfolio"] },
+      { name: "Framer Motion", category: "Tools", projects: ["portfolio"] },
+      { name: "Git", category: "Tools", projects: ["pos", "healthsaral", "hrms", "portfolio"] },
+      { name: "GitHub", category: "Tools", projects: ["pos", "healthsaral", "hrms", "portfolio"] },
+      { name: "Figma (UI/UX)", category: "Tools", projects: ["pos", "healthsaral", "hrms", "portfolio"] },
+      { name: "Postman", category: "Tools", projects: ["pos", "hrms"] },
       { name: "Power BI", category: "Tools", projects: [] },
       { name: "MySQL Workbench", category: "Tools", projects: [] },
-      { name: "Git", category: "Tools", projects: ["pos", "healthsaral", "hrms"] },
-      { name: "GitHub", category: "Tools", projects: ["pos", "healthsaral", "hrms"] },
-      { name: "Postman", category: "Tools", projects: ["pos", "hrms"] },
       { name: "Cloudinary", category: "Tools", projects: [] },
       { name: "Jira", category: "Tools", projects: [] },
       { name: "Supabase", category: "Tools", projects: ["healthsaral"] },
-      { name: "Figma (UI/UX)", category: "Tools", projects: ["pos", "healthsaral", "hrms"] },
     ],
   },
 ];
 
 const FILTER_PROJECTS = [
   { id: "all", label: "All Skills", accent: "#ffffff" },
+  { id: "portfolio", label: "Desktop Portfolio", accent: "#a855f7" },
   { id: "pos", label: "3D AR POS", accent: "#22c55e" },
   { id: "healthsaral", label: "HealthSaral", accent: "#38bdf8" },
   { id: "hrms", label: "HRMS", accent: "#f59e0b" },

@@ -33,7 +33,7 @@ export function About() {
           <div className="flex flex-wrap items-center gap-4 pt-2 text-xs text-white/60 font-mono">
             <span className="flex items-center gap-1.5">
               <MapPin size={13} className="text-white/40" />
-              Surat, India (SVNIT)
+              Surat, India
             </span>
             <span>·</span>
             <a 

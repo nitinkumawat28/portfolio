@@ -11,20 +11,23 @@ export type ProjectEntry = Omit<DeckItem, "actions"> & {
  */
 export const deckProjects: ProjectEntry[] = [
   {
-    id: "ar-restaurant-pos",
-    title: "3D AR Restaurant POS",
-    meta: "Frontend developer, 2026",
+    id: "portfolio",
+    title: "Portfolio Project",
+    meta: "Creative & Full-Stack Dev, 2026",
     description:
-      "An AR-enabled restaurant point-of-sale system featuring interactive 3D food models designed in Blender and rendered in the browser, digital menu ordering, and real-time billing.",
+      "An interactive retro-modern desktop operating system portfolio featuring draggable multi-window widgets, 3D WebGL background shaders, real-time GitHub sync, and interactive project decks.",
     stats: [
-      { value: 50, suffix: "+", label: "Cafes & restaurants pitched" },
-      { value: "Blender", label: "3D Asset Modeling" },
-      { value: "AWS S3", label: "Asset storage" },
+      { value: "React 19", label: "Frontend Core" },
+      { value: "WebGL", label: "Ambient Shader" },
+      { value: "Tailwind v4", label: "Design System" },
     ],
-    accent: "#22c55e",
-    image: "/projects/pos.jpg",
-    imageAlt: "3D AR Restaurant POS mobile ordering system with interactive food preview and table view",
-    links: [{ label: "GitHub", href: "https://github.com/nitinkumawat28/tablemate-pos", variant: "ghost" }],
+    accent: "#a855f7",
+    image: "/projects/portfolio.png",
+    imageAlt: "Interactive Desktop OS Portfolio home page interface with draggable widgets, folders, and real-time clock",
+    links: [
+      { label: "Live Site", href: "https://nitinkumawat.me/", variant: "ghost" },
+      { label: "GitHub", href: "https://github.com/nitinkumawat28/portfolio", variant: "ghost" },
+    ],
   },
   {
     id: "healthsaral",
@@ -44,6 +47,22 @@ export const deckProjects: ProjectEntry[] = [
       { label: "Live site", href: "https://healthsaral.in/", variant: "ghost" },
       { label: "GitHub", href: "https://github.com/nitinkumawat28/HealthSaral", variant: "ghost" },
     ],
+  },
+  {
+    id: "ar-restaurant-pos",
+    title: "3D AR Restaurant POS",
+    meta: "Frontend developer, 2026",
+    description:
+      "An AR-enabled restaurant point-of-sale system featuring interactive 3D food models designed in Blender and rendered in the browser, digital menu ordering, and real-time billing.",
+    stats: [
+      { value: 50, suffix: "+", label: "Cafes & restaurants pitched" },
+      { value: "Blender", label: "3D Asset Modeling" },
+      { value: "AWS S3", label: "Asset storage" },
+    ],
+    accent: "#22c55e",
+    image: "/projects/pos.jpg",
+    imageAlt: "3D AR Restaurant POS mobile ordering system with interactive food preview and table view",
+    links: [{ label: "GitHub", href: "https://github.com/nitinkumawat28/tablemate-pos", variant: "ghost" }],
   },
   {
     id: "hrms",

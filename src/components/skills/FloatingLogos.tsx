@@ -24,13 +24,18 @@ export type FloatingLogoItem = {
 
 // Skills that exist on the skills page with project associations
 const PAGE_SKILLS: Array<{ name: string; projects?: string[] }> = [
+  { name: "TypeScript", projects: ["portfolio"] },
+  { name: "React.js", projects: ["pos", "hrms", "portfolio"] },
   { name: "C++", projects: [] },
   { name: "Python", projects: ["hrms"] },
   { name: "C", projects: [] },
-  { name: "HTML5", projects: ["pos", "healthsaral", "hrms"] },
-  { name: "JavaScript", projects: ["pos", "hrms"] },
-  { name: "CSS3", projects: ["pos", "healthsaral", "hrms"] },
-  { name: "Tailwind CSS", projects: ["pos", "healthsaral", "hrms"] },
+  { name: "HTML5", projects: ["pos", "healthsaral", "hrms", "portfolio"] },
+  { name: "JavaScript", projects: ["pos", "hrms", "portfolio"] },
+  { name: "CSS3", projects: ["pos", "healthsaral", "hrms", "portfolio"] },
+  { name: "Tailwind CSS", projects: ["pos", "healthsaral", "hrms", "portfolio"] },
+  { name: "Vite", projects: ["portfolio"] },
+  { name: "WebGL", projects: ["portfolio"] },
+  { name: "Framer Motion", projects: ["portfolio"] },
   { name: "Semrush", projects: [] },
   { name: "Google Ads (Search, Display)", projects: [] },
   { name: "Conversion Tracking (GA4, GTM)", projects: ["healthsaral"] },
@@ -42,13 +47,14 @@ const PAGE_SKILLS: Array<{ name: string; projects?: string[] }> = [
   { name: "Kubernetes", projects: [] },
   { name: "GitHub Actions", projects: ["hrms"] },
   { name: "Cloudflare", projects: ["healthsaral"] },
-  { name: "Git", projects: ["pos", "healthsaral", "hrms"] },
-  { name: "GitHub", projects: ["pos", "healthsaral", "hrms"] },
+  { name: "Git", projects: ["pos", "healthsaral", "hrms", "portfolio"] },
+  { name: "GitHub", projects: ["pos", "healthsaral", "hrms", "portfolio"] },
   { name: "Postman", projects: ["pos", "hrms"] },
   { name: "Cloudinary", projects: [] },
   { name: "Jira", projects: [] },
   { name: "Supabase", projects: ["healthsaral"] },
-  { name: "Figma (UI/UX)", projects: ["pos", "healthsaral", "hrms"] },
+  { name: "Figma (UI/UX)", projects: ["pos", "healthsaral", "hrms", "portfolio"] },
+  { name: "Blender", projects: ["pos"] },
 ];
 
 function generateFloatingLogos(): FloatingLogoItem[] {

@@ -51,7 +51,12 @@ import {
   siGit,
   siPostman,
   siCloudinary,
-  siJira
+  siJira,
+  siTypescript,
+  siVite,
+  siWebgl,
+  siFramer,
+  siBlender
 } from "simple-icons";
 
 export type SimpleIconData = {
@@ -66,7 +71,8 @@ export type SkillIcon =
   | { kind: "generic"; Icon: LucideIcon; scale?: number };
 
 export const skillIcons: Record<string, SkillIcon> = {
-  // Languages
+  // Languages & Frameworks
+  TypeScript: { kind: "brand", icon: siTypescript },
   "C++": { kind: "brand", icon: siCplusplus },
   Python: { kind: "brand", icon: siPython },
   C: { kind: "brand", icon: siC },
@@ -80,6 +86,9 @@ export const skillIcons: Record<string, SkillIcon> = {
   "Node.js": { kind: "brand", icon: siNodedotjs },
   "Three.js": { kind: "brand", icon: siThreedotjs, scale: 0.95 },
   Astro: { kind: "brand", icon: siAstro },
+  Vite: { kind: "brand", icon: siVite },
+  WebGL: { kind: "brand", icon: siWebgl },
+  "Framer Motion": { kind: "brand", icon: siFramer },
 
   // Digital Marketing
   SEO: { kind: "generic", Icon: Search },
@@ -127,6 +136,7 @@ export const skillIcons: Record<string, SkillIcon> = {
   Supabase: { kind: "brand", icon: siSupabase },
   "Figma (UI/UX)": { kind: "brand", icon: siFigma },
   Figma: { kind: "brand", icon: siFigma },
+  Blender: { kind: "brand", icon: siBlender },
 
   // Other references / Backwards compatibility
   "Gemini API": { kind: "brand", icon: siGooglegemini },

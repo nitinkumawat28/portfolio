@@ -7,7 +7,7 @@ import { RepoCarousel } from "../repo-carousel/RepoCarousel";
 /** GitHub credentials */
 const GITHUB_USERNAME = "nitinkumawat28";
 const LINKEDIN_URL = "https://www.linkedin.com/in/nitin-kumawat-25367a311/";
-const PINNED: string[] = [];
+const PINNED: string[] = ["healthsaral", "portfolio", "hrms", "scented-aura"];
 const MAX_REPOS = 12;
 const CACHE_MINUTES = 60; // 1 hour cache
 
@@ -124,43 +124,61 @@ const INITIAL_REPOS: DeckItem[] = [
   {
     id: "repo-healthsaral",
     title: "HealthSaral",
-    meta: "Astro, updated recently",
-    description: "AI-powered lab report analyzer turning complex medical blood tests into clear, plain-language summaries.",
+    meta: "Astro & Gemini API, 2026",
+    description: "AI-powered lab report analyzer that translates complex medical blood tests into clear, plain-language summaries using Gemini API, Cloudflare R2, and Supabase.",
     stats: [
       { value: 0, label: "Stars" },
       { value: 0, label: "Forks" },
       { value: "Astro", label: "Language" },
       { value: "main", label: "Branch" },
     ],
-    accent: "#c084fc",
+    accent: "#38bdf8",
     actions: [
       { label: "View Code", href: "https://github.com/nitinkumawat28/HealthSaral", variant: "primary" },
       { label: "Live Demo", href: "https://healthsaral.in/", variant: "ghost" },
     ],
-    tags: ["Astro", "Tailwind CSS", "Supabase", "Claude API"],
+    tags: ["Astro", "Gemini API", "Supabase", "Cloudflare R2", "Cloudflare Workers", "Tailwind CSS"],
+  },
+  {
+    id: "repo-portfolio",
+    title: "Portfolio",
+    meta: "React 19 & TypeScript, 2026",
+    description: "Interactive desktop operating system portfolio featuring draggable multi-window widgets, 3D WebGL ambient shaders, and live GitHub synchronization.",
+    stats: [
+      { value: 0, label: "Stars" },
+      { value: 0, label: "Forks" },
+      { value: "TypeScript", label: "Language" },
+      { value: "main", label: "Branch" },
+    ],
+    accent: "#a855f7",
+    actions: [
+      { label: "View Code", href: "https://github.com/nitinkumawat28/portfolio", variant: "primary" },
+      { label: "Live Demo", href: "https://nitinkumawat.me/", variant: "ghost" },
+    ],
+    tags: ["React 19", "TypeScript", "Tailwind CSS", "WebGL / OGL", "Vite"],
   },
   {
     id: "repo-hrms",
     title: "HRMS",
-    meta: "Python, updated recently",
-    description: "Comprehensive Human Resource Management System for attendance tracking, automated payroll, and employee records.",
+    meta: "React.js & Neon PostgreSQL, 2026",
+    description: "Full-stack enterprise HR management system featuring Admin and Employee dashboards, Neon PostgreSQL, Gemini AI chatbot, OCR onboarding, and Docker CI/CD.",
     stats: [
       { value: 0, label: "Stars" },
       { value: 0, label: "Forks" },
-      { value: "Python", label: "Language" },
+      { value: "JavaScript", label: "Language" },
       { value: "main", label: "Branch" },
     ],
-    accent: "#60a5fa",
+    accent: "#f59e0b",
     actions: [
       { label: "View Code", href: "https://github.com/nitinkumawat28/HRMS", variant: "primary" },
     ],
-    tags: ["Python", "FastAPI", "PostgreSQL", "Docker"],
+    tags: ["React.js", "Node.js", "Neon PostgreSQL", "Gemini API", "Cloud Vision OCR", "Docker"],
   },
   {
     id: "repo-scented-aura-boutique",
-    title: "scented-aura-boutique",
-    meta: "TypeScript, updated recently",
-    description: "Modern luxury e-commerce boutique for artisanal fragrances with dynamic catalog filtering.",
+    title: "Scented Aura Boutique",
+    meta: "TypeScript & React, 2026",
+    description: "Luxury e-commerce storefront for artisanal fragrances, featuring dynamic catalog filtering, responsive product showcases, and a seamless shopping cart experience.",
     stats: [
       { value: 0, label: "Stars" },
       { value: 0, label: "Forks" },
@@ -171,7 +189,7 @@ const INITIAL_REPOS: DeckItem[] = [
     actions: [
       { label: "View Code", href: "https://github.com/nitinkumawat28/scented-aura-boutique", variant: "primary" },
     ],
-    tags: ["TypeScript", "React", "Tailwind CSS", "Vite"],
+    tags: ["TypeScript", "React", "Tailwind CSS", "Vite", "E-Commerce"],
   },
 ];
 
@@ -180,8 +198,8 @@ export function GitReposFolderView() {
   const [items, setItems] = useState<DeckItem[]>(() => {
     try {
       const cached =
-        localStorage.getItem(`gh-repos-v7:${GITHUB_USERNAME}`) ||
-        sessionStorage.getItem(`gh-repos-v7:${GITHUB_USERNAME}`);
+        localStorage.getItem(`gh-repos-v9:${GITHUB_USERNAME}`) ||
+        sessionStorage.getItem(`gh-repos-v9:${GITHUB_USERNAME}`);
       if (cached) {
         const { data } = JSON.parse(cached);
         if (Array.isArray(data) && data.length > 0) {
@@ -354,14 +372,13 @@ const EXCLUDED_PATTERNS = [
   "tablemate",
   "template-pos",
   "template_pos",
-  "portfolio",
   "dbt_labs",
   "dbt-labs",
   "dbt",
 ];
 
 async function loadRepos(user: string, signal: AbortSignal): Promise<Repo[]> {
-  const cacheKey = `gh-repos-v7:${user}`;
+  const cacheKey = `gh-repos-v9:${user}`;
   try {
     const cached = localStorage.getItem(cacheKey) || sessionStorage.getItem(cacheKey);
     if (cached) {
@@ -398,40 +415,63 @@ function pick(all: Repo[]): Repo[] {
     }
     return true;
   });
-  const pinned = PINNED.map((n) => usable.find((r) => r.name === n)).filter((r): r is Repo => Boolean(r));
+  const pinned = PINNED.map((pin) =>
+    usable.find((r) => r.name.toLowerCase().includes(pin.toLowerCase()))
+  ).filter((r): r is Repo => Boolean(r));
+
   const rest = usable
-    .filter((r) => !PINNED.includes(r.name))
+    .filter((r) => !PINNED.some((pin) => r.name.toLowerCase().includes(pin.toLowerCase())))
     .sort((a, b) => +new Date(b.pushed_at) - +new Date(a.pushed_at));
+
   return [...pinned, ...rest].slice(0, MAX_REPOS);
 }
 
 function toItem(r: Repo): DeckItem {
   const lang = r.language ?? "Code";
+  const nameLower = r.name.toLowerCase();
+
+  let title = r.name;
+  if (nameLower === "portfolio") {
+    title = "Portfolio";
+  } else if (nameLower.includes("healthsaral")) {
+    title = "HealthSaral";
+  } else if (nameLower.includes("hrms")) {
+    title = "HRMS";
+  } else if (nameLower.includes("scented-aura") || nameLower.includes("scented")) {
+    title = "Scented Aura Boutique";
+  }
+
   const actions: DeckItem["actions"] = [
     { label: "View Code", href: r.html_url, variant: "primary" },
   ];
-  const nameLower = r.name.toLowerCase();
   if (r.homepage) {
     const href = nameLower.includes("healthsaral")
       ? "https://healthsaral.in/"
+      : nameLower.includes("portfolio")
+      ? "https://nitinkumawat.me/"
       : r.homepage.startsWith("http") ? r.homepage : `https://${r.homepage}`;
     actions.push({ label: "Live Demo", href, variant: "ghost" });
   } else if (nameLower.includes("healthsaral")) {
     actions.push({ label: "Live Demo", href: "https://healthsaral.in/", variant: "ghost" });
+  } else if (nameLower.includes("portfolio")) {
+    actions.push({ label: "Live Demo", href: "https://nitinkumawat.me/", variant: "ghost" });
   }
 
   let tags: string[] = [];
   let description = r.description?.trim() || "Open-source repository on GitHub.";
 
   if (nameLower.includes("healthsaral")) {
-    description = "AI-powered lab report analyzer turning complex medical blood tests into clear, plain-language summaries.";
-    tags = ["Astro", "Tailwind CSS", "Supabase", "Claude API"];
+    description = "AI-powered lab report analyzer that translates complex medical blood tests into clear, plain-language summaries using Gemini API, Cloudflare R2, and Supabase.";
+    tags = ["Astro", "Gemini API", "Supabase", "Cloudflare R2", "Cloudflare Workers", "Tailwind CSS"];
+  } else if (nameLower.includes("portfolio")) {
+    description = "Interactive desktop operating system portfolio featuring draggable multi-window widgets, 3D WebGL ambient shaders, and live GitHub synchronization.";
+    tags = ["React 19", "TypeScript", "Tailwind CSS", "WebGL / OGL", "Vite"];
   } else if (nameLower.includes("hrms")) {
-    description = "Comprehensive Human Resource Management System for attendance tracking, automated payroll, and employee records.";
-    tags = ["Python", "FastAPI", "PostgreSQL", "Docker"];
+    description = "Full-stack enterprise HR management system featuring Admin and Employee dashboards, Neon PostgreSQL, Gemini AI chatbot, OCR onboarding, and Docker CI/CD.";
+    tags = ["React.js", "Node.js", "Neon PostgreSQL", "Gemini API", "Cloud Vision OCR", "Docker"];
   } else if (nameLower.includes("scented-aura") || nameLower.includes("scented")) {
-    description = "Modern luxury e-commerce boutique for artisanal fragrances with dynamic catalog filtering.";
-    tags = ["TypeScript", "React", "Tailwind CSS", "Vite"];
+    description = "Luxury e-commerce storefront for artisanal fragrances, featuring dynamic catalog filtering, responsive product showcases, and a seamless shopping cart experience.";
+    tags = ["TypeScript", "React", "Tailwind CSS", "Vite", "E-Commerce"];
   } else {
     tags = [lang, ...(r.topics?.slice(0, 3) || ["Open Source", "Full-Stack"])];
   }
@@ -440,7 +480,7 @@ function toItem(r: Repo): DeckItem {
 
   return {
     id: stableId,
-    title: r.name,
+    title,
     meta: `${lang}, updated ${timeAgo(r.pushed_at)}`,
     description,
     stats: [

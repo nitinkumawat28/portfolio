@@ -246,22 +246,22 @@ function CardBody({ item, reduced, position, total, onPrev, onNext }: BodyProps)
 
   return (
     <div
-      className="grid gap-6 p-5 md:min-h-[380px] md:grid-cols-[400px_1fr] md:gap-8 md:p-8 items-center"
+      className="grid gap-6 p-5 items-start md:min-h-[380px] md:grid-cols-[400px_1fr] md:gap-8 md:p-8 md:items-center"
       style={{ "--accent": item.accent } as CSSProperties}
     >
       <Visual item={item} reduced={reduced} />
 
       <div className="flex min-w-0 flex-col">
-        <h3 className="text-2xl font-semibold leading-tight tracking-tight text-white md:text-3xl">
+        <h1 className="text-2xl font-semibold leading-tight tracking-tight text-white md:text-3xl">
           <span className="sr-only">{item.title}</span>
           <span aria-hidden>
             {title.text}
             {!title.done && caret}
           </span>
-        </h3>
+        </h1>
         <p className="mt-1 text-sm text-white/55">{item.meta}</p>
 
-        <p className="mt-4 max-w-[62ch] text-[15px] leading-relaxed text-white/75">
+        <p className="mt-4 max-w-[62ch] text-[15px] leading-relaxed text-white/75 min-h-[4.5rem] sm:min-h-[3.75rem]">
           <span className="sr-only">{item.description}</span>
           <span aria-hidden>
             {desc.text}
