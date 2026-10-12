@@ -225,32 +225,39 @@ export function NotFound({ path }: NotFoundProps) {
               </p>
             </div>
 
-            {/* The Signature "Take Me Back Home" Serif Button (Sharp & Clear) */}
+            {/* Creative & Simple "Take Me Back Home" Interactive Button */}
             <a
               href="/"
-              className="group relative inline-block text-center cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 px-6 py-4"
+              className="group relative inline-flex items-center gap-3.5 px-6 py-3.5 sm:px-7 sm:py-4 rounded-full border border-white/15 bg-white/[0.04] backdrop-blur-md transition-all duration-300 hover:border-[#f4eedb]/60 hover:bg-white/[0.08] hover:scale-105 active:scale-95 shadow-xl hover:shadow-[0_0_35px_rgba(244,238,219,0.15)] cursor-pointer"
             >
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.2rem] font-['DM_Serif_Display',serif] text-[#f4eedb] tracking-tight group-hover:text-white transition-colors">
-                <span className="italic font-normal">Take </span>
-                <span className="italic font-normal">Me </span>
-                <span className="italic font-normal">Back </span>
-                <span className="not-italic font-normal">Home</span>
-              </h1>
-              {/* Subtle underline on hover */}
-              <div className="h-[1px] w-0 group-hover:w-full bg-[#f4eedb]/60 transition-all duration-300 mx-auto mt-2" />
+              {/* Subtle pulsing green indicator dot */}
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
+              </span>
+
+              {/* Elegant single-line typography */}
+              <span className="font-['DM_Serif_Display',serif] italic text-xl sm:text-2xl md:text-[1.65rem] text-[#f4eedb] tracking-tight group-hover:text-white transition-colors whitespace-nowrap">
+                Take Me Back Home
+              </span>
+
+              {/* Forward animated arrow */}
+              <span className="font-mono text-sm sm:text-base text-[#737373] group-hover:text-[#f4eedb] group-hover:translate-x-1 transition-all">
+                &rarr;
+              </span>
             </a>
 
             {/* Back button option */}
             <button
               onClick={() => window.history.back()}
-              className="inline-flex items-center gap-2 text-xs font-mono text-[#737373] hover:text-[#f4eedb] transition-colors cursor-pointer pt-2 group"
+              className="inline-flex items-center gap-2 text-xs font-mono text-[#737373] hover:text-[#f4eedb] transition-colors cursor-pointer group pt-1"
             >
               <ArrowLeft size={13} className="group-hover:-translate-x-1 transition-transform" />
               <span>Or return to previous page</span>
             </button>
 
             {path && (
-              <div className="text-[10px] font-mono text-[#525252] tracking-wider">
+              <div className="text-[10px] font-mono text-[#525252] tracking-wider pt-1">
                 REQUESTED_URI: {path}
               </div>
             )}
